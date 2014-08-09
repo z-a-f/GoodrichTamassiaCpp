@@ -207,6 +207,50 @@ void C_1_8() {
 	printVector<double>(a);
 }
 
+// C-1.9
+class Vector2 {
+// Not sure if understood the question right - do we store data and access it using x and y?
+private:
+	vector< vector<double> > vec;
+public:
+	Vector2(double x, double y);
+	const Vector2 operator+(const Vector2 &A);
+	const Vector2 operator*(const double &A);
+	const double operator*(const Vector2 &A);
+};
+
+// C-1.10
+long pow2(int i) {
+	if (i < 0) {
+		return 0;
+	} else {
+		return (long(1) << i);
+	}
+}
+
+void C_1_10() {
+	int i = 10;
+	cout << pow2(i) << endl;
+}
+
+// C-1.11
+int gcd(int n, int m) {
+	assert(n > m);
+	int temp;
+	while (m != 0) {
+		temp = n % m;
+		n = m;
+		m = temp;
+	}
+	return n;
+}
+
+void C_1_11() {
+	int n = 80844;
+	int m = 25320;
+	cout << gcd(n, m) << endl;
+}
+
 int main() {
 	srand (time(NULL));
 	cout << "*****************C-1.1*****************\n";
@@ -225,6 +269,10 @@ int main() {
 	C_1_7();
 	cout << "*****************C-1.8*****************\n";
 	C_1_8();
+	cout << "*****************C-1.10*****************\n";
+	C_1_10();
+	cout << "*****************C-1.11*****************\n";
+	C_1_11();
 }
 
 
