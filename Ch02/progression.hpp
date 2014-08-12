@@ -11,7 +11,7 @@ public:
 	void printProgression(int n);
 protected:
 	virtual long firstValue();		// reset
-	virtual long nextValue();		// advance
+	virtual long nextValue() = 0;		// advance
 protected:
 	long first;
 	long cur;
@@ -62,7 +62,8 @@ protected:
 	long base;
 };
 
-GeomProgression::GeomProgression(long b) : Progression(1), base(b) {} // constructor
+// constructor
+GeomProgression::GeomProgression(long b) : Progression(1), base(b) {} 
 
 long GeomProgression::nextValue() {
 	cur *= base;
