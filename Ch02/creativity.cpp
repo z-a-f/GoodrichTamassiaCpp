@@ -7,6 +7,8 @@
 #include <time.h>
 #include <vector>
 
+#include "progression.hpp"
+
 using namespace std;
 
 template <typename T>
@@ -125,6 +127,145 @@ void C_2_4() {
 }
 
 
+// C-2.5
+class AbsProgression : public Progression {
+public:
+	AbsProgression(long f = 2, long s = 200);
+protected:
+	virtual long firstValue();
+	virtual long nextValue();
+protected:
+	long second;
+	long prev;
+};
+
+AbsProgression::AbsProgression(long f, long s)
+	: Progression(f), second(s), prev(abs(second + first)) {}
+
+long AbsProgression::firstValue() {
+	cur = first;
+	prev = abs(second + first);
+	return cur;
+}
+
+long AbsProgression::nextValue() {
+	long temp = prev;
+	prev = cur;
+	cur = abs(cur - temp);
+	return cur;
+}
+
+void C_2_5 () {
+	Progression * prog;
+	cout << "Absolute difference progression with default start:\n";
+	prog = new AbsProgression();
+	prog->printProgression(10);
+}
+
+// C-2.6
+class SqrtProgression : public Progression {
+public:
+	SqrtProgression(double f = 65536) : first(f), cur(f) {}
+protected:
+	virtual long firstValue();
+	virtual long nextValue();
+protected:
+	double first;
+	double cur;
+};
+
+long SqrtProgression::firstValue() {
+	cur = first;
+	return long(cur);
+}
+
+long SqrtProgression::nextValue() {
+	cur = sqrt(cur);
+	return long(cur);
+}
+
+void C_2_6() {
+	Progression * prog;
+	cout << "Absolute difference progression with default start:\n";
+	prog = new SqrtProgression(129);
+	prog->printProgression(10);
+}
+
+// C-2.7
+class A {
+public:
+	A(long X = 0) : x(X) {}
+	long getX() {
+		return this->x;
+	}
+	void setX(long x) {
+		this->x = x;
+	}
+	virtual long getParentX() {return x;}
+	virtual void setParentX(long x) {this->x = x;}
+protected:
+	long x;
+};
+
+
+class B : public A {
+public:
+	B(long X = 0) : x(X) {}
+	long getX() {
+		return this->x;
+	}
+	void setX(long x) {
+		this->x = x;
+	}
+	virtual long getParentX() {
+		return A::getX();
+	}
+	virtual void setParentX(long x) {
+		A::setX(x);
+	}
+protected:
+	long x;
+};
+
+
+class C : public B {
+public:
+	C(long X = 0) : x(X) {}
+	long getX() {
+		return this->x;
+	}
+	void setX(long x) {
+		this->x = x;
+	}
+	virtual long getParentX() {
+		return B::getX();
+	}
+	virtual void setParentX(long x) {
+		B::setX(x);
+	}
+	void setGrandParentX(long x) {
+		A::setX(x);
+	}
+protected:
+	long x;
+};
+
+void C_2_7() {
+	C *obj = new C(3);
+	obj->setParentX(2);
+	obj->setGrandParentX(1);
+
+	cout << obj->getX() << endl;
+	cout << obj->getParentX() << endl;
+	cout << obj->B::getParentX() << endl;
+
+	obj->A::setX(100);
+	cout << obj->A::getX() << endl;
+	cout << obj->B::getX() << endl;
+	cout << obj->getX() << endl;
+	
+}
+
 
 int main() {
 	srand (time(NULL));
@@ -134,7 +275,12 @@ int main() {
 	C_2_3();
 	cout << "*****************C-2.4*****************\n";
 	C_2_4();
-
+	cout << "*****************C-2.5*****************\n";
+	C_2_5();
+	cout << "*****************C-2.6*****************\n";
+	C_2_6();
+	cout << "*****************C-2.7*****************\n";
+	C_2_7();
 }
 
 
