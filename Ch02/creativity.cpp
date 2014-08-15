@@ -5,6 +5,7 @@
 #include <queue>
 #include <regex>
 #include <set>
+#include <stdlib.h>
 #include <string>
 #include <time.h>
 #include <vector>
@@ -388,8 +389,15 @@ int getCoeff(string element, char var) {
 		coeff += element[i];
 		i++;
 	}
+	//cout << "\n*** " << coeff << " ***\n";
 	// cout << "c: " << coeff << endl;
-	return atoi(coeff.c_str());
+	if (coeff == "+") {
+		return 1;
+	} else if (coeff == "-") {
+		return -1;
+	}else {
+		return atoi(coeff.c_str());
+	}
 }
 
 int getPower(string element, char var) {
@@ -413,15 +421,35 @@ int getPower(string element, char var) {
 	return atoi(power.c_str());
 }
 
-string elementDerivative(string element, char var) {
+string elementDerivative(string element, string var) {
 	int coeff, power;
-	coeff = getCoeff(element, var);
-	power = getPower(element, var);
+	string buffer = "";
+	char charBuf[33];
+	coeff = getCoeff(element, var[0]);
+	power = getPower(element, var[0]);
 	// cout << coeff << ' ' << power << endl;
 	coeff *= power;
 	power--;
 
-	return "";
+	//cout << ((coeff >= 0) ? "+" : "") <<  coeff << var << '^' << power;
+
+	if (power == -1)
+		buffer = "";
+	else {
+		// Coefficient first:
+		sprintf(charBuf,"%d",coeff);
+		// itoa(coeff, charBuf, 10)
+		buffer += (coeff >= 0) ? "+" : "";
+		buffer += string(charBuf);
+		// power:
+		sprintf(charBuf,"%d",power);
+		// itoa(power, charBuf, 10);
+		buffer += (power == 0) ? "" :
+			"*" + var + ((power == 1) ? "" : "^"+string(charBuf));
+		}
+
+	return buffer;
+	//cout << "";
 }
 
 std::ostream& operator<<(std::ostream& os, const vector<string>& obj) {
@@ -433,8 +461,27 @@ std::ostream& operator<<(std::ostream& os, const vector<string>& obj) {
 	return os;
 }
 
+void derivate(string polynomial, string var) {
+	vector<string> el = getElements(polynomial);
+	// cout << el << ": ";
+	cout << polynomial << ":\n\t";
+	for (vector<string>::iterator it = el.begin(); it != el.end(); ++it) {
+		cout << elementDerivative(*it, var);
+	}
+}
+
+void C_2_9() {
+	string poly;
+
+	poly = "x^2 - 3*x";
+	derivate (poly, "x"); cout << endl;
+
+	poly = "3 + 2*x + x^2";
+	derivate (poly, "x"); cout << endl;
+}
+
 int main() {
-	/*
+	
 	srand (time(NULL));
 	cout << "*****************C-2.1*****************\n";
 	C_2_1();
@@ -449,11 +496,10 @@ int main() {
 	cout << "*****************C-2.7*****************\n";
 	C_2_7();
 	cout << "*****************C-2.8*****************\n";
-	cout << "C-2.8 Code ready, Simulator is not :)\n";*/
-
-	cout << getElements("2*x^2 + 3*x") << endl;
-	vector<string> temp = getElements("2*x^2 + 3*x") ;
-	elementDerivative(temp[0], 'x');
+	cout << "C-2.8 Code ready, Simulator is not :)\n";
+	cout << "*****************C-2.9*****************\n";
+	C_2_9();
+	
 }
 
 
