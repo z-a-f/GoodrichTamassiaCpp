@@ -3,6 +3,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <queue>
+#include <regex>
 #include <set>
 #include <string>
 #include <time.h>
@@ -271,13 +272,22 @@ void C_2_7() {
 // Prototypes:
 class Packet;
 class User;
-//class Internet;
+class Internet;
 
-Packet emptyPacket;
-emptyPacket.recepient = NULL;
+class Packet {
+public:
+	Packet(User *r = NULL, User *s = NULL, string m = "")
+		: message(m), recepient(r), sender(s) {}
+public:
+	string message;
+	User *recepient;
+	User *sender;
+};
+
+const Packet *emptyPacket = new Packet();
+/*emptyPacket.recepient = NULL;
 emptyPacket.sender = NULL;
-emptyPacket.message = "";
-
+emptyPacket.message = "";*/
 
 // Classes:
 class User {
@@ -302,9 +312,8 @@ bool User::push(Packet p) {
 
 Packet User::pop(bool ready, bool ack) {
 	if (this->req == false) {
-		return emptyPacket;
+		return *emptyPacket;
 	}
-
 	// If Internet is requesting the data
 	if (ready && !txMessages.empty()) {
 		// and previous data was received:
@@ -313,25 +322,15 @@ Packet User::pop(bool ready, bool ack) {
 			txMessages.pop();
 			if (txMessages.empty()) {
 				this->req = 0;
-				return emptyPacket;
+				return *emptyPacket;
 			}
 		}
 		return txMessages.front();
 	} else {
 		this->req = 0;
-		return emptyPacket;
+		return *emptyPacket;
 	}
 }
-
-class Packet {
-public:
-	Packet(User *r = NULL, User *s = NULL, string m = "")
-		: recepient(r), sender(s), message(m) {}
-public:
-	string message;
-	User *recepient;
-	User *sender;
-};
 
 class Internet {
 public:
@@ -343,9 +342,99 @@ public:
 	vector<User*> users;
 };
 
+void Internet::process() {
+	while (true) {	// Constantly monitor
+		// Scan through users:
+		for (vector<User*>::iterator it = users.begin(); it != users.end(); ++it) {
+			// Check if there is something to transmitt:
+			while ((*it)->requestTx()) {
+				// try poping:
+				bool ack = false;
+				Packet p;
+				do {
+					p = (*it)->pop(true, ack);
+					ack = p.recepient->push(p);
+				} while (!ack);
+			}
+		}
+	}
+}
 
+// C-2.9
+vector<string> getElements(string formula) {
+	string temp;
+	vector<string> elements;
+	temp = formula[0];
+	for (int i = 1, len = formula.length(); i < len; i++) {
+		// No spaces:
+		if (formula[i] == ' ' || formula[i] == '\t') {
+			continue;
+		} else if (formula[i] == '+' || formula[i] == '-') {
+			elements.push_back(temp);
+			temp = formula[i];
+		} else {
+			temp = temp + formula[i];
+		}
+	}
+	elements.push_back(temp);
+	return elements;
+}
+
+int getCoeff(string element, char var) {
+	// int coeff;
+	int i = 0;
+	string coeff = "";
+	while (element[i] != var) {
+		coeff += element[i];
+		i++;
+	}
+	// cout << "c: " << coeff << endl;
+	return atoi(coeff.c_str());
+}
+
+int getPower(string element, char var) {
+	// Find the variable:
+	int i = 0;
+	string power = "";
+	int len = element.length();
+	while (element[i] != var) {
+		i++;
+	}
+	i++;
+	if (element[i] != '^')
+		return 1;
+	else {
+		while (i < len) {
+			i++;
+			power += element[i];
+		}
+	}
+	// cout << "p: " << power << endl;
+	return atoi(power.c_str());
+}
+
+string elementDerivative(string element, char var) {
+	int coeff, power;
+	coeff = getCoeff(element, var);
+	power = getPower(element, var);
+	// cout << coeff << ' ' << power << endl;
+	coeff *= power;
+	power--;
+
+	return "";
+}
+
+std::ostream& operator<<(std::ostream& os, const vector<string>& obj) {
+	os << "{ ";
+	for (vector<string>::const_iterator it = obj.begin(); it != obj.end(); ++it) {
+		os << *it << ' ';
+	}
+	os << '}';
+	return os;
+}
 
 int main() {
+	/*
 	srand (time(NULL));
 	cout << "*****************C-2.1*****************\n";
 	C_2_1();
@@ -359,6 +448,12 @@ int main() {
 	C_2_6();
 	cout << "*****************C-2.7*****************\n";
 	C_2_7();
+	cout << "*****************C-2.8*****************\n";
+	cout << "C-2.8 Code ready, Simulator is not :)\n";*/
+
+	cout << getElements("2*x^2 + 3*x") << endl;
+	vector<string> temp = getElements("2*x^2 + 3*x") ;
+	elementDerivative(temp[0], 'x');
 }
 
 
