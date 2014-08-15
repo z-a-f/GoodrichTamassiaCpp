@@ -2,6 +2,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
+#include <queue>
 #include <set>
 #include <string>
 #include <time.h>
@@ -265,6 +266,83 @@ void C_2_7() {
 	cout << obj->getX() << endl;
 	
 }
+
+// C-2.8
+// Prototypes:
+class Packet;
+class User;
+//class Internet;
+
+Packet emptyPacket;
+emptyPacket.recepient = NULL;
+emptyPacket.sender = NULL;
+emptyPacket.message = "";
+
+
+// Classes:
+class User {
+public:
+	User(bool r = false) : req(r) {};
+public:
+	bool push (Packet p);
+	Packet pop (bool ready, bool ack);	// Once request comes, if the queue is not empty send packet and wait for ack
+	bool requestTx () {return req;}
+	void addMessage(User * u, string message);
+protected:
+	queue<Packet> txMessages;		// Has to be FIFO
+	vector<Packet> rxMessages;		// Order doesn't matter
+	bool req;
+
+};
+
+bool User::push(Packet p) {
+	rxMessages.push_back(p);
+	return true;	// Tell everyone that the message was received
+}
+
+Packet User::pop(bool ready, bool ack) {
+	if (this->req == false) {
+		return emptyPacket;
+	}
+
+	// If Internet is requesting the data
+	if (ready && !txMessages.empty()) {
+		// and previous data was received:
+		if (ack) {
+			// remove the current, and return the next:
+			txMessages.pop();
+			if (txMessages.empty()) {
+				this->req = 0;
+				return emptyPacket;
+			}
+		}
+		return txMessages.front();
+	} else {
+		this->req = 0;
+		return emptyPacket;
+	}
+}
+
+class Packet {
+public:
+	Packet(User *r = NULL, User *s = NULL, string m = "")
+		: recepient(r), sender(s), message(m) {}
+public:
+	string message;
+	User *recepient;
+	User *sender;
+};
+
+class Internet {
+public:
+	Internet (bool r = true) : req(r) {};
+	virtual void process();	// Constantly monitors users
+	void addUser(User * u) {users.push_back(u);}
+public:
+	bool req;		// request for packets
+	vector<User*> users;
+};
+
 
 
 int main() {
