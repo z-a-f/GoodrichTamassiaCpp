@@ -1,6 +1,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 #include <set>
 #include <time.h>
@@ -120,7 +121,258 @@ void P_2_2() {
 
 }
 
-/* BORED - WILL FINISH LATER! */
+// P-2.3
+class Complex {
+public:
+	Complex(double r = 0, double i = 0) : R(r), I(i) {};
+public:
+	friend std::ostream& operator<<(ostream& os, const Complex& obj) {
+		os << obj.R << ((obj.I >= 0) ? "+" : "") << obj.I << 'i';
+		return os;
+	}
+	friend Complex operator+(Complex lhs, const Complex& rhs) {
+		lhs.R += rhs.R;
+		lhs.I += rhs.I;
+		return lhs;
+	}
+	friend Complex operator-(Complex lhs, const Complex& rhs) {
+		lhs.R -= rhs.R;
+		lhs.I -= rhs.I;
+		return lhs;
+	}
+	friend Complex operator*(Complex lhs, const Complex& rhs) {
+		// (lR + i*lI)*(rR + i*rI) = (lR*rR - lI*rI) + i*(lR*rI + lI*rR)
+		lhs.R = lhs.R*rhs.R - lhs.I*rhs.I;
+		lhs.I = lhs.R*rhs.I + lhs.I*rhs.R;
+		return lhs;
+	}
+protected:
+	double R;
+	double I;
+};
+
+template <typename T>
+class Vector{
+public:
+	Vector(int len = 0, int init = 0);
+	Vector(vector<T> v);
+	Vector(Complex c, int len = 1);
+public:
+	// Why can't I use prototypes here and the declaration later???
+	friend ostream& operator<<(ostream& os, const Vector<T>& obj) {
+		for (typename vector<T>::const_iterator it = obj.buffer.begin(); it != obj.buffer.end(); ++it) {
+			os << *it << ' ';
+		}
+		return os;
+	}
+
+	friend Vector<T> operator+(Vector<T> lhs, const Vector<T>& rhs){
+		assert(lhs.buffer.size() == rhs.buffer.size());
+		typename std::vector<T>::iterator itL = lhs.buffer.begin();
+		typename std::vector<T>::const_iterator itR = rhs.buffer.begin();
+		for (; itL != lhs.buffer.end() || itR != rhs.buffer.end(); ++itL, ++itR) {
+			*itL += *itR;
+		}
+		return lhs;
+	}
+	friend Vector<T> operator-(Vector<T> lhs, const Vector<T>& rhs) {
+		assert(lhs.buffer.size() == rhs.buffer.size());
+		typename std::vector<T>::iterator itL = lhs.buffer.begin();
+		typename std::vector<T>::const_iterator itR = rhs.buffer.begin();
+		for (; itL != lhs.buffer.end() || itR != rhs.buffer.end(); ++itL, ++itR) {
+			*itL -= *itR;
+		}
+		return lhs;
+	}
+	friend Vector<T> operator*(Vector<T> lhs, const Vector<T>& rhs) {
+		assert(lhs.buffer.size() == rhs.buffer.size());
+		typename std::vector<T>::iterator itL = lhs.buffer.begin();
+		typename std::vector<T>::const_iterator itR = rhs.buffer.begin();
+		for (; itL != lhs.buffer.end() || itR != rhs.buffer.end(); ++itL, ++itR) {
+			*itL *= *itR;
+		}
+		return lhs;
+	}
+	friend Vector<T> operator*(Vector<T> lhs, const T& rhs) {
+		typename std::vector<T>::iterator itL = lhs.buffer.begin();
+		for (; itL != lhs.buffer.end(); ++itL) {
+			*itL = *itL * rhs;
+		}
+		return lhs;
+	}
+	// unsigned size() {return buffer.size();}
+protected:
+	std::vector<T> buffer;
+};
+
+template <typename T>
+Vector<T>::Vector(int len, int init) {
+	assert (init == 0 || init == 1);
+	for (int i = 0; i < len; i++) {
+		buffer.push_back(T(init));
+	}
+}
+template <typename T>
+Vector<T>::Vector(vector<T> v) {
+	this->buffer = v;
+}
+template <typename T>
+Vector<T>::Vector(Complex c, int len) {
+	for (int i = 0; i < len; i++) {
+		buffer.push_back(c);
+	}
+}
+
+
+/*
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const Vector<T>& obj) {
+	for (typename vector<T>::const_iterator it = obj.buffer.begin(); it != obj.buffer.end(); ++it) {
+		os << *it << ' ';
+	}
+	return os;
+}
+
+template <typename T>
+Vector<T> operator+(Vector<T> lhs, const Vector<T>& rhs) {
+	assert(lhs.size() == rhs.size());
+	for (typename vector<T>::iterator itL = lhs.buffer.begin(), itR = rhs.buffer.begin(); \
+		itL != lhs.buffer.end() || itR != rhs.buffer.end(); 
+		++itL, ++itR) {
+		*itL += *itR;
+	}
+	return lhs;
+}
+*/
+
+void P_2_3 () {
+	Vector<int> *v1 = new Vector<int>(10, 0);
+	Vector<int> *v2 = new Vector<int>(10, 1);
+	cout << *v1 << endl;
+	cout << *v2 << endl;
+
+	cout << *v1 + *v2 << endl;
+
+	Complex *c = new Complex(2, 3);
+	Vector<Complex> *v3 = new Vector<Complex>(*c, 10);
+	Complex *d = new Complex (-1, 4);
+	cout << *v3 * *d << endl;
+}
+
+// P-2.5
+class Polygon {
+public:
+	Polygon(double b = 0) : base(b) {};
+	virtual ~Polygon() {};
+public:
+	virtual double area() = 0;
+	virtual double perimeter() = 0;
+protected:
+	double base;
+};
+
+class Triangle : public Polygon {
+public:
+	Triangle(double A = 0.0, double B = 0.0, double C = 0) : a(A), b(B) {base = C;}
+public:
+	virtual double area ();
+	virtual double perimeter ();
+protected:
+	double a;
+	double b;
+private:
+	double ar;
+	double per;
+};
+
+double Triangle::perimeter() {
+	this->per = a+b+base;
+	return per;
+}
+
+double Triangle::area() {
+	double s = this->perimeter()/2;
+	this->ar = sqrt(s*(s-a)*(s-b)*(s-base));
+	return ar;
+}
+
+void P_2_5() {
+	Triangle *t = new Triangle(3, 4, 5);
+	cout << "The perimeter is: " << t->perimeter() << endl;
+	cout << "The area is: " << t->area() << endl;
+}
+
+// P-2.6
+short getLetter(char l) {
+	if (l >= 'a' && l <= 'z') {
+		return short(l - 'a');
+	} else if (l >= 'A' && l <= 'Z') {
+		return short(l - 'A');
+	} else {
+		return -1;
+	}
+}
+
+void letterNum(int alphabet[26], ifstream& file) {
+	string line;
+	if (file.is_open()) {
+		while (getline(file, line)) {
+			for (int i = 0; i < line.length(); i++) {
+				short num = getLetter(line[i]);
+				if (num != -1) {
+					alphabet[num]++;
+				}
+			}
+		}
+	}
+}
+
+void drawStars(int n) {
+	for (int i = 0; i < n; i++)
+		cout <<'*';
+}
+
+void drawHistNorm(const int alphabet[26]) {
+	int total = 0;
+	int max = 0;
+	const int row = 48;
+	// Get the total/max:
+	for (int i = 0; i < 26; i++) {
+		total += alphabet[i];
+		if (max < alphabet[i]) max = alphabet[i];
+	}
+	
+	cout << "Letter statistic (normalized)\n";
+	for (int i = 0; i < 26; i++) {
+		cout << char(i+'a') << ": ";
+		printf("%.2f%%\t", alphabet[i]*100.0/total);
+		// drawStars(alphabet[i]*1000/total);
+		drawStars((alphabet[i]*row)/max);
+		cout << endl;
+	}
+}
+
+void drawHist(const int alphabet[26]) {
+	cout << "Letter statistic (not normalized)\n";
+	for (int i = 0; i < 26; i++) {
+		cout << char(i+'a') << ":\t";
+		drawStars(alphabet[i]);
+		cout << endl;
+	}
+}
+
+void P_2_6() {
+	// Get the file name:
+	string fName;
+	cout << "Please, enter the file name: ";
+	cin >> fName;
+	// Get the letters:
+	int alphabet[26] = {0};
+	ifstream iFile (&(fName[0]));
+	letterNum(alphabet, iFile);
+	// drawHist(alphabet);	
+	drawHistNorm(alphabet);
+}
 
 int main() {
 	srand(time(NULL));
@@ -128,6 +380,13 @@ int main() {
 	P_2_1();
 	cout << "\n*****************P-2.2*****************\n";
 	P_2_2();
+	cout << "\n*****************P-2.3*****************\n";
+	P_2_3();
+	cout << "\n*****************P-2.5*****************\n";
+	P_2_5();
+	cout << "\n*****************P-2.6*****************\n";
+	P_2_6();
+
 
 }
 

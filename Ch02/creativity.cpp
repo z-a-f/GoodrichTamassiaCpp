@@ -481,7 +481,6 @@ void C_2_9() {
 }
 
 int main() {
-	
 	srand (time(NULL));
 	cout << "*****************C-2.1*****************\n";
 	C_2_1();
@@ -499,7 +498,6 @@ int main() {
 	cout << "C-2.8 Code ready, Simulator is not :)\n";
 	cout << "*****************C-2.9*****************\n";
 	C_2_9();
-	
 }
 
 
