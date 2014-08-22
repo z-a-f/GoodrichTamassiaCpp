@@ -107,9 +107,10 @@ int main() {
   GameEntry *e0 = new GameEntry("Zafar", 10);
   GameEntry *e1 = new GameEntry("Zafa", 11);
 
-  Scores *s = new Scores(5);
-  s->add(*e0);
-  s->add(*e1);
+  // Scores *s = new Scores(5);
+  Scores s(5);
+  s.add(*e0);
+  s.add(*e1);
   // cout << *s << endl;
   cout << typeid(s[0]).name() << endl;
   cout << s[0] << endl;
