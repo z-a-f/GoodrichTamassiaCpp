@@ -70,7 +70,7 @@ Scores::Scores(int maxEnt) {
   entries = new GameEntry[maxEnt];
   numEntries = 0;
 }
-Scores::~Scores() {
+Scores::~Scores() {		// Destructor
   delete [] entries;
 }
 void Scores::add(const GameEntry& e) { // Add a game entry
@@ -89,12 +89,21 @@ void Scores::add(const GameEntry& e) { // Add a game entry
   }
   entries[i+1] = e;
 }
-/*
-GameEntry& Scores::operator[](size_t i) const{ 
-  // cout << typeid(entries).name() << endl;
-  return (*this).entries[i]; 
+GameEntry Scores::remove(int i) throw(IndexOutOfBounds) { // Remove
+  try{	  // Exception for outof bounds
+    if ( (i < 0) || (i >= numEntries) )
+      throw IndexOutOfBounds("Invalid index");
+  } catch (IndexOutOfBounds& iob) {
+    cout << iob.getMessage() << endl;
+    return GameEntry();
+  }
+  GameEntry e = entries[i];		// Save the removed object
+  for (int j = i+1; j < numEntries; j++)
+      entries[j-1] = entries[j];	// Shift entries left
+  numEntries--;			// one fewer entry
+  return e;			// return the removed object
 }
-*/
+
 ostream& operator<<(ostream& out, const Scores& obj){
   for (int i = 0; i < obj.numEntries; i++) {
     out << obj.entries[i] << ' ';
@@ -111,7 +120,14 @@ int main() {
   Scores s(5);
   s.add(*e0);
   s.add(*e1);
-  // cout << *s << endl;
-  cout << typeid(s[0]).name() << endl;
-  cout << s[0] << endl;
+  s.add(GameEntry("John", 9));
+  s.add(GameEntry("Alice", 19));
+  s.add(GameEntry("Bob", 15));
+  s.add(GameEntry("Connor", 1));
+  cout << s << endl;
+  s.remove(0);
+  s.remove(6);
+
+    
+  cout << s << endl;
 }
