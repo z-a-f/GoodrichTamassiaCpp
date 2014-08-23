@@ -1,3 +1,4 @@
+/* http://codereview.stackexchange.com/questions/60834/scorekeeper-for-a-game */
 
 #include <iostream>
 #include <new>
