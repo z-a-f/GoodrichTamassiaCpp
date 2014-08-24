@@ -65,8 +65,8 @@ void SLinkedList<T>::removeFront() {
 }
 
 template <typename T>
-ostream& operator<<(ostream& os, const SLinkedList<T>& DL) {
-	SNode<T> *p = DL.head;
+ostream& operator<<(ostream& os, const SLinkedList<T>& SL) {
+	SNode<T> *p = SL.head;
 	os << "HEAD" << "->";
 	while (p != NULL) {
 		os << p->elem << "->";
@@ -81,6 +81,8 @@ ostream& operator<<(ostream& os, const SLinkedList<T>& DL) {
 int main() {
 	SLinkedList<string> a;
 	a.addFront("MSP");
+	cout << a << endl;
+	a.addFront("LSB");
 	cout << a << endl;
 }
 

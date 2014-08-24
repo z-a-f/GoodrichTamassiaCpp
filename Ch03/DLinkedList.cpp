@@ -32,7 +32,7 @@ private:
 	DNode<T> *head;
 	DNode<T> *tail;
 private:
-	friend ostream& operator<< <>(ostream&, const DLinkedList<T>&);
+	friend ostream& operator<< <T>(ostream&, const DLinkedList<T>&);
 protected:
 	void add(DNode<T> *v, const T& e);	// add node before v
 	void remove(DNode<T> *v);
@@ -76,7 +76,9 @@ void DLinkedList<T>::add(DNode<T> *v, const T& e) {
 	u->elem = e;	// New node with e
 	u->next = v;
 	u->prev = v->prev;
-	v->prev->next = v->prev = u;
+	v->prev->next = u;
+	v->prev = u;
+	// v->prev->next = v->prev = u;
 }
 
 template <typename T>
@@ -102,25 +104,26 @@ void DLinkedList<T>::remove(DNode<T> *v) {
 
 template <typename T>
 void DLinkedList<T>::removeFront() {
-	remove(head->next);
+	DLinkedList<T>::remove(head->next);
 }
 
 template <typename T>
 void DLinkedList<T>::removeBack() {
-	remove(tail->prev);
+	DLinkedList<T>::remove(tail->prev);
 }
 
 //////////////////////////////////////
 template <typename T>
 ostream& operator<<(ostream& os, const DLinkedList<T>& DL) {
-	DNode<T> *p = DL.head;
+	DNode<T> *p = DL.head->next;
 	os << "HEAD" << "<->";
-	while (p->next != DL.tail) {
-		p = p->next;
+	while (p != DL.tail) {
 		os << p->elem << "<->";
+		p = p->next;
 	}
 	// delete p;
 	os << "TAIL";
+	// os << "\t" << DL.head->next->prev->elem << endl;
 	return os;
 }
 
@@ -128,7 +131,10 @@ ostream& operator<<(ostream& os, const DLinkedList<T>& DL) {
 int main() {
 	DLinkedList<int> ll;
 	cout << ll << endl;
-
+	ll.addFront(10);
+	cout << ll << endl;
+	ll.addFront(11);
+	cout << ll << endl;
 }
 
 
