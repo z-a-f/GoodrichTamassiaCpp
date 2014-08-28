@@ -2,6 +2,7 @@
 #define STACK_HPP
 
 #include "exceptions.hpp"
+#include "SLinkedList.hpp"
 
 /***********************************************
  * Stack data structures
@@ -106,6 +107,13 @@ class LinkedStack {
 public:
   LinkedStack();
   int size() const;
+  bool empty() const;
+  const Elem& top() const throw(StackEmpty); // the top element
+  void push(const Elem& e);
+  void pop() throw(StackEmpty); 
+private:
+  SLinkedList<Elem> S; 
+  int n;
 };
 
 
