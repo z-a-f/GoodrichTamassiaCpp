@@ -1,3 +1,6 @@
+#ifndef STACK_HPP
+#define STACK_HPP
+
 #include "exceptions.hpp"
 
 /***********************************************
@@ -93,3 +96,17 @@ std::ostream& operator<<(std::ostream& os, const ArrayStack<E>& ar) {
   os << '}';
   return os;
 }
+
+
+/*************************
+ * Linked List based Stack
+ *************************/
+template <typename T>
+class LinkedStack {
+public:
+  LinkedStack();
+  int size() const;
+};
+
+
+#endif
