@@ -32,4 +32,17 @@ public:
     : RuntimeException(err) {}
 };
 
+class QueueEmpty : public RuntimeException {
+public:
+  QueueEmpty(const std::string& err = "Queue is empty!")
+    : RuntimeException(err) {}
+}
+
+class QueueFull : public RuntimeException {
+public:
+  QueueFull(const std::string& err = "Queue is full!")
+    : RuntimeException(err) {}
+}
+
+
 #endif
