@@ -11,5 +11,11 @@ int main () {
   cout << SL << endl;
   SL.removeFront();
   cout << SL << endl;
+  SL.removeFront();
+  cout << SL << endl;
+  SL.removeFront();
+  cout << SL << endl;
+  SL.removeFront();
+  cout << SL << endl;
   
 }
