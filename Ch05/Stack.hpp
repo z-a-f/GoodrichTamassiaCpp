@@ -24,7 +24,9 @@
  * Prototypes:
  ***************/
 template <typename T> class ArrayStack;
+template <typename T> class LinkedStack;
 template <typename T> std::ostream&operator<<(std::ostream&, const ArrayStack<T>&);
+template <typename T> std::ostream&operator<<(std::ostream&, const LinkedStack<T>&);
 
 /*********************
  * Array based stack
@@ -108,13 +110,54 @@ public:
   LinkedStack();
   int size() const;
   bool empty() const;
-  const Elem& top() const throw(StackEmpty); // the top element
-  void push(const Elem& e);
+  const T& top() const throw(StackEmpty); // the top element
+  void push(const T& e);
   void pop() throw(StackEmpty); 
+public:
+  friend std::ostream& operator<< <> (std::ostream&, const LinkedStack<T>&);
 private:
-  SLinkedList<Elem> S; 
+  SLinkedList<T> S; 
   int n;
 };
 
+template <typename T>
+LinkedStack<T>::LinkedStack() : S(), n(0) {} // Constructor
+
+template <typename T>	       
+int LinkedStack<T>::size() const { // What is the size?
+  return n;
+}
+
+template <typename T>
+bool LinkedStack<T>::empty() const { // Is it empty?
+  return n == 0;
+}
+
+template <typename T>
+const T& LinkedStack<T>::top() const throw (StackEmpty) { // first element
+  if (empty()) throw StackEmpty("Top of empty stack");
+  return S.front();
+}
+
+template <typename T>
+void LinkedStack<T>::push(const T& e) { // push element to the front
+  ++n;
+  S.addFront(e);
+}
+
+template <typename T>
+void LinkedStack<T>::pop() throw (StackEmpty) { // remove the first value
+  if (empty()) throw StackEmpty("Pop from empty stack");
+  --n;
+  S.removeFront();
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const LinkedStack<T>& ar) {
+  os << "TOP->";
+  os << ar.S;
+  // os << " }";
+  return os;
+}
 
 #endif
