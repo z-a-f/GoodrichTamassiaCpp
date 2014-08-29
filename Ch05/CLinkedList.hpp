@@ -33,7 +33,7 @@ private:
 };
 
 template <typename T>
-CLinkedList<T>::CLinkedList() : sursor(NULL) {} // constructor
+CLinkedList<T>::CLinkedList() : cursor(NULL) {} // constructor
 
 template <typename T>
 CLinkedList<T>::~CLinkedList() { // destructor
@@ -60,36 +60,45 @@ template <typename T>
 void CLinkedList<T>::advance() {
   cursor = cursor->next;
 }
-/**/
 
 template <typename T>
-void CLinkedList<T>::addFront(const T& e) {
+void CLinkedList<T>::add(const T& e) {
   CNode<T>* v = new CNode<T>;	// New node
   v->elem = e;
-  v->next = head;
-  head = v;
+  if (cursor == NULL){
+    v->next = v;
+    cursor = v;
+  } else {
+    v->next = cursor->next;
+    cursor->next = v;
+  }
 }
 
 template <typename T>
-void CLinkedList<T>::removeFront() {
-  CNode<T>* old = head;
-  head = old->next;
+void CLinkedList<T>::remove() {
+  CNode<T>* old = cursor->next;
+  if (old == cursor)		// Single node?
+    cursor = NULL;
+  else
+    cursor->next = old->next;
   delete old;
 }
 
 template <typename T>
-std::ostream& operator<<(std::ostream& os, const CLinkedList<T>& SL) {
-  CNode<T> *p = SL.head;
-  // os << "HEAD" << "->";
-  while (p != NULL) {
-    os << p->elem << "->";
-    p = p->next;
+std::ostream& operator<<(std::ostream& os, const CLinkedList<T>& CL) {
+  CNode<T> *p;
+  os << '[';
+  if (CL.empty()) {
+    os << ']';
+  } else {
+    p = CL.cursor->next;	// This is the front
+    while (p != CL.cursor) {
+      os << p->elem << ',';
+      p = p->next;
+    }
+    os << p->elem << "*]";
   }
-  // delete p;
-  os << "NULL";
   return os;
 }
-
-
 
 #endif
