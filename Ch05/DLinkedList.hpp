@@ -43,6 +43,8 @@ DLinkedList<T>::DLinkedList(){		// constructor
   head = new DNode<T>;
   tail = new DNode<T>;
   head->next = tail;
+  // head->prev = tail;
+  // tail->next = head;
   tail->prev = head;
 }
 
