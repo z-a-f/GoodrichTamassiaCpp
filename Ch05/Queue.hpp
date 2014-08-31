@@ -54,10 +54,10 @@ private:
 
 template <typename E>
 ArrayQueue<E>::ArrayQueue(int cap)
-  : S(new E[cap]), capacity (cap), n(0), f(0), r(0) {}
+  : Q(new E[cap]), capacity (cap), f(0), r(0), n(0) {}
 
 template <typename E>
-int ArrayQueue<E>::size() const {
+unsigned int ArrayQueue<E>::size() const {
   return n;
 }
 
@@ -95,10 +95,23 @@ std::ostream& operator<<(std::ostream& os, const ArrayQueue<E>& ar) {
   if (ar.empty()) {
     os << "EMPTY";
   } else {
-    
+    for (unsigned i = 0; i < ar.capacity; i++) {
+      if (ar.f < ar.r) {  // case 2
+        if (i >= ar.f && i < ar.r)
+          os << ar.Q[i];
+        else
+          os << 'N';
+      } else { // case 2
+        if (i >= ar.r && i < ar.f)
+          os << 'N';
+        else
+          os << ar.Q[i];
+      }
+      os << ' ';
+    }
   }
+  return os;
 }
-
 
 /*************************
  * Linked List based Queue
