@@ -44,5 +44,16 @@ public:
     : RuntimeException(err) {}
 };
 
+class DequeEmpty : public RuntimeException {
+public:
+  DequeEmpty(const std::string& err = "Deque is empty!")
+    : RuntimeException(err) {}
+};
+
+class DequeFull : public RuntimeException {
+public:
+  DequeFull(const std::string& err = "Deque is full!")
+    : RuntimeException(err) {}
+};
 
 #endif

@@ -2,6 +2,8 @@
 #define QUEUE_HPP
 
 #include "exceptions.hpp"
+#include "CLinkedList.hpp"
+
 
 /***********************************************
  * Queue data structures
@@ -116,6 +118,59 @@ std::ostream& operator<<(std::ostream& os, const ArrayQueue<E>& ar) {
 /*************************
  * Linked List based Queue
  *************************/
+template <typename E>
+class LinkedQueue {
+public:
+  LinkedQueue();		// Constructor
+  unsigned int size() const;	// Number of items
+  bool empty() const;		// Empty?
+  const E& front() const	// The front element
+    throw (QueueEmpty);		// Error if empty
+  void enqueue(const E& e);	// push a new element
+  void dequeue()		// Remove the top
+    throw(QueueEmpty);		// Error if empty
+public:
+  friend std::ostream& operator<< <> (std::ostream&, const LinkedQueue<E>&);
+private:
+  CLinkedList<E> C;		// CLL of stack elements
+  unsigned int n;		// NUmber of elements
+};
 
+template <typename E>
+LinkedQueue<E>::LinkedQueue() : C(), n(0) {}
+
+template <typename E>
+unsigned int LinkedQueue<E>::size() const {return n;}
+
+template <typename E>
+bool LinkedQueue<E>::empty() const {return n==0;}
+
+template <typename E>
+const E& LinkedQueue<E>::front() const throw (QueueEmpty) {
+  if (empty())
+    throw QueueEmpty("Front of empty queue!");
+  return C.front();
+}
+
+template <typename E>
+void LinkedQueue<E>::enqueue(const E& e) {
+  C.add(e);
+  C.advance();			// move the cursor
+  n++;
+}
+
+template <typename E>
+void LinkedQueue<E>::dequeue() throw (QueueEmpty) {
+  if (empty())
+    throw QueueEmpty("Dequeue of empty queue!");
+  C.remove();
+  n--;
+}
+
+template <typename E>
+std::ostream& operator<<(std::ostream& os, const LinkedQueue<E>& CLL) {
+  os << CLL.C;
+  return os;
+}
 
 #endif
