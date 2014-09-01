@@ -1,6 +1,7 @@
 #ifndef STACK_HPP
 #define STACK_HPP
 
+#include <memory>
 #include "exceptions.hpp"
 #include "SLinkedList.hpp"
 
@@ -37,6 +38,7 @@ class ArrayStack {
   enum { DEF_CAPACITY = 100 };	// default capacity
 public:
   ArrayStack(int cap = DEF_CAPACITY); // Constructor
+  ~ArrayStack();
   int size() const;		      // Number of items
   bool empty() const;		      // Empty?
   const E& top() const		      // The top element
@@ -48,14 +50,20 @@ public:
 public:
   friend std::ostream& operator<< <> (std::ostream&, const ArrayStack<E>&);
 private:
-  E* S;				// Array of stack elements
   unsigned int capacity;	// stack capacity
+  //E* S;				// Array of stack elements
+  std::unique_ptr<E[]> S = std::unique_ptr<E[]>(new E[capacity]);
   int t;		// index of the top
 };
 
 template <typename E>
 ArrayStack<E>::ArrayStack(int cap)
-  : S(new E[cap]), capacity (cap), t(-1) {}
+  : capacity (cap), S(new E[cap]), t(-1) {}
+
+template <typename E>
+ArrayStack<E>::~ArrayStack() {
+  // delete S;
+}
 
 template <typename E>
 int ArrayStack<E>::size() const {
