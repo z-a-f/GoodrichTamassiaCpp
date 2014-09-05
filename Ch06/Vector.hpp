@@ -15,7 +15,7 @@ class ArrayVector {
 public:
   ArrayVector();		// Construct
   size_t size() const;
-  bool empty() const;
+       bool empty() const;
   T& operator[](int i);
   T& at(int i) throw (IndexOutOfBounds);
   void reserve(int N);
