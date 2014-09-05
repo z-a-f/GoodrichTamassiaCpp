@@ -35,7 +35,9 @@ private:
 
 template <typename T>
 ArrayVector<T>::ArrayVector()
-  : capacity(0), n(0), A(NULL) {}
+  : capacity(0), n(0) {		// , A(NULL) {}
+  A = NULL;
+}
 
 template <typename T>
 size_t ArrayVector<T>::size() const {
