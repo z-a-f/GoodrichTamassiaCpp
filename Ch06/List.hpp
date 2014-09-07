@@ -79,4 +79,3 @@ NodeList::Iterator NodeList::begin() const	// begin position is first item
 
 NodeList::Iterator NodeList::end() const	// end position is just beyond last
 { return Iterator(trailer); }
-
