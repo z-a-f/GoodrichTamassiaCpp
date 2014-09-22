@@ -91,3 +91,4 @@ template <typename T>
 void ArrayVector<T>::insert(const T& e) { // Insert in the end
   insert(n, e);
 }
+
