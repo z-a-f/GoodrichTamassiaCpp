@@ -1,24 +1,19 @@
+#include <ctime>
+#include <iostream>
 
-#ifndef VECTOR_CH06_HPP
-#define VECTOR_CH06_HPP
+#include "exception.hpp"
 
-#include <memory>
-#include "exceptions.hpp"
-
-/* Chapter 6.1 - GR C++ */
-template <typename T> class ArrayVector;
-template <typename T> std::ostream& operator<<(std::ostream&, const ArrayVector<T>&);
-
+using namespace std;
 
 template <typename T>
 class ArrayVector {
 public:
-  ArrayVector();		// Construct
-  size_t size() const;
+  ArrayVector();
+  size_t size const;
   bool empty() const;
   T& operator[](int i);
-  T& at(int i) throw (IndexOutOfBounds);
-  void reserve(int N);
+  T& at (int i) throw (IndexOutOfBounds);
+  void reserve (int N);
   void erase(int i);
   void insert(int i, const T& e);
   void insert(const T& e);	// Insert in the end
@@ -96,6 +91,3 @@ template <typename T>
 void ArrayVector<T>::insert(const T& e) { // Insert in the end
   insert(n, e);
 }
-
-
-#endif
