@@ -1,33 +1,67 @@
 
-// P-6.1
+#ifndef VECTOR_CH06_HPP
+#define VECTOR_CH06_HPP
+
+#include <memory>
+#include "exceptions.hpp"
+
+/* Chapter 6.1 - GR C++ */
+template <typename T> class ArrayVector;
+template <typename T> std::ostream& operator<<(std::ostream&, const ArrayVector<T>&);
+
+
 template <typename T>
 class ArrayVector {
 public:
-  ArrayVector();
-  size_t size const;
+  ArrayVector();		// Construct
+  ArrayVector(size_t N);
+  ArrayVector(const ArrayVector<T>& AV);
+  size_t size() const;
   bool empty() const;
   T& operator[](int i);
-  T& at (int i) throw (IndexOutOfBounds);
-  void reserve (int N);
+  T& at(int i) throw (IndexOutOfBounds);
+  void reserve(int N);
   void erase(int i);
   void insert(int i, const T& e);
   void insert(const T& e);	// Insert in the end
-  // housekeeping?
+  void insertFront(const T& e);	// Insert in the front
+  // housekeeping
+  
 public:				// friends
-  friend std::ostream& operator<< <T> (std::ostream&, const ArrayVector<T>&);
+  friend std::ostream& operator<< <T>(std::ostream&, const ArrayVector<T>&);
 private:
-  int capacity;
+  size_t capacity;
   size_t n;
-  // T* A;
-  // std::unique_ptr<T[]> A = std::unique_ptr<T[]>(new T[capacity]);
+  size_t front;
   std::unique_ptr<T[]> A;
 };
 
 template <typename T>
 ArrayVector<T>::ArrayVector()
-  : capacity(0), n(0) {		// , A(NULL) {}
+  : capacity(0), n(0), front(0) {		// , A(NULL) {}
   A = NULL;
 }
+
+template <typename T>
+ArrayVector<T>::ArrayVector(size_t N) 
+  : capacity(N), n(0), front(0) {
+  if (N < 2) N = 2;
+  A = std::unique_ptr<T[]>(new T[N]);
+}
+
+
+template <typename T>
+ArrayVector<T>::ArrayVector(const ArrayVector<T>& AV) {
+  capacity = AV.capacity;
+  n = AV.n;
+  front = AV.front;
+  std::unique_ptr<T[]> B = std::unique_ptr<T[]>(new T[AV.capacity]);
+  for (int j = 0; j < AV.n; j++) {
+    B[j] = AV.A[j];
+  }
+  A = std::move(B);
+}
+
 
 template <typename T>
 size_t ArrayVector<T>::size() const {
@@ -57,8 +91,6 @@ void ArrayVector<T>::reserve(int N) {
   std::unique_ptr<T[]> B = std::unique_ptr<T[]>(new  T[N]);
   for (int j = 0; j < n; j++)
     B[j] = A[j];
-  // if (A != NULL) delete [] A; /* Using smart ptr, so don't need that */
-  // A = B; /* Smart ptr needs to use 'move' when going out of scope*/
   A = std::move(B);
   capacity = N;
 }
@@ -87,3 +119,32 @@ void ArrayVector<T>::insert(const T& e) { // Insert in the end
   insert(n, e);
 }
 
+template <typename T>
+void ArrayVector<T>::insertFront(const T& e) {
+  if (n >= capacity) {
+    int c = 2*capacity;
+    (1 > c) ? reserve (2) : reserve (c);
+  }
+  if (front == 0) front = capacity - 1;
+  else front--;
+  A[front] = e;
+  n++;
+}
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const ArrayVector<T>& AV) {
+  if (AV.capacity == 0) {
+    os << "[ Zero Capacity! ]";
+    return os;
+  }
+  size_t end = (AV.front + AV.n) % AV.capacity;
+  os << "[ Capacity: " << AV.capacity << "; ";
+  os << "Front: " << AV.front << "; ";
+  for (size_t i = AV.front; i < end; i = (i + 1) % AV.capacity) {
+    os << AV.A[i] << ' ';
+  }
+  os << ']';
+  return os;
+}
+
+#endif

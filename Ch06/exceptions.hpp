@@ -56,4 +56,17 @@ public:
     : RuntimeException(err) {}
 };
 
+class VectorFull : public RuntimeException {
+public:
+  VectorFull(const std::string& err = "Vector is full!")
+    : RuntimeException(err) {}
+};
+
+class VectorEmpty : public RuntimeException {
+public:
+  VectorEmpty(const std::string& err = "Vector is empty!")
+    : RuntimeException(err) {}
+};
+
+
 #endif
