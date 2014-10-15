@@ -23,10 +23,10 @@ public:
   void reserve(int N);
   void erase(int i);
   void insert(int i, const T& e);
-  void insert(const T& e);	// Insert in the end
+  void insertBack(const T& e);	// Insert in the end
   void insertFront(const T& e);	// Insert in the front
   // housekeeping
-  
+  void debug();
 public:				// friends
   friend std::ostream& operator<< <T>(std::ostream&, const ArrayVector<T>&);
 private:
@@ -90,9 +90,10 @@ void ArrayVector<T>::reserve(int N) {
   if (capacity >= N) return;
   std::unique_ptr<T[]> B = std::unique_ptr<T[]>(new  T[N]);
   for (int j = 0; j < n; j++)
-    B[j] = A[j];
+    B[j] = A[(j+front) % capacity];
   A = std::move(B);
   capacity = N;
+  front = 0;
 }
 
 template <typename T>
@@ -115,15 +116,20 @@ void ArrayVector<T>::insert(int i, const T& e) {
 }
 
 template <typename T>
-void ArrayVector<T>::insert(const T& e) { // Insert in the end
-  insert(n, e);
+void ArrayVector<T>::insertBack(const T& e) { // Insert in the end
+  if (n >= capacity) {
+    int c = 2*capacity;
+    (1 > c) ? reserve (1) : reserve (c);
+  }
+  A[(front+n)%capacity] = e;
+  n++;
 }
 
 template <typename T>
 void ArrayVector<T>::insertFront(const T& e) {
   if (n >= capacity) {
     int c = 2*capacity;
-    (1 > c) ? reserve (2) : reserve (c);
+    (1 > c) ? reserve (1) : reserve (c);
   }
   if (front == 0) front = capacity - 1;
   else front--;
@@ -137,14 +143,27 @@ std::ostream& operator<<(std::ostream& os, const ArrayVector<T>& AV) {
     os << "[ Zero Capacity! ]";
     return os;
   }
-  size_t end = (AV.front + AV.n) % AV.capacity;
-  os << "[ Capacity: " << AV.capacity << "; ";
-  os << "Front: " << AV.front << "; ";
-  for (size_t i = AV.front; i < end; i = (i + 1) % AV.capacity) {
-    os << AV.A[i] << ' ';
+  // size_t end = (AV.front + AV.n) % AV.capacity;
+  os << "[ ";
+  
+  for (size_t i = 0; i < AV.n; i++) {
+    size_t index = (i+AV.front) % AV.capacity;
+    os << index << ":";
+    os << AV.A[index] << ' ';
   }
   os << ']';
   return os;
+}
+
+template <typename T>
+void ArrayVector<T>::debug() {
+  std::cout << "[ Capacity: " << capacity << "; ";
+  std::cout << "Front: " << front << "; ";
+  std::cout << "n: " << n << "; ";
+  for (int i = 0; i < capacity; i++) {
+    std::cout << A[i] << ' ';
+  }
+  std::cout << "]" << std::endl;
 }
 
 #endif
