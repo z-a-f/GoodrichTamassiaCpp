@@ -8,6 +8,7 @@ using namespace std;
 
 
 int main() {
+  cout << "************P-6.1*******************\n";
   ArrayVector<int> A(3);
   cout << A << endl;
   A.insertFront(20);
@@ -39,5 +40,7 @@ int main() {
   A.insertFront(-50);
   A.debug();
   cout << A << endl;
+  
+  cout << "************P-6.2*******************\n";
   
 }

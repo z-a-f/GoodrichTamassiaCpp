@@ -1,14 +1,13 @@
 
-#ifndef VECTOR_CH06_HPP
-#define VECTOR_CH06_HPP
+#ifndef CH06_HPP
+#define CH06_HPP
 
 #include <memory>
 #include "exceptions.hpp"
 
-/* Chapter 6.1 - GR C++ */
+/* Chapter 6, Problem 6.1 - GR C++ */
 template <typename T> class ArrayVector;
 template <typename T> std::ostream& operator<<(std::ostream&, const ArrayVector<T>&);
-
 
 template <typename T>
 class ArrayVector {
@@ -165,5 +164,85 @@ void ArrayVector<T>::debug() {
   }
   std::cout << "]" << std::endl;
 }
+
+/* Chapter 6, Problem 6.2 - GR C++ */
+template <typename T>
+class Node {
+private:
+  T val;
+  Node<T> *prev;
+  Node<T> *next;
+
+private:
+  Node() {
+    prev = NULL;
+    next = NULL;
+  }
+  Node(Node<T> *prev, Node<T> *next) {
+    this->prev = prev;
+    this->next = next;
+  }
+
+  friend class DLL<T>;		// Give access to the DLL
+}
+
+template <typename T>
+class DLL {
+public:
+  DLL();
+  ~DLL();
+  const bool empty();		// Is it empty?
+  const size_t size();		// Size of the DLL
+  const T& front();		// get the front
+  const T& back();		// get the back
+  const T& at(size_t i) throw (IndexOutOfBounds); // element at(i)
+  const T& operator[] <T> (const size_t& i);  // 
+  void insertBefore(Node * node, const T& v); // Add before "node"
+  void insertAfter(Node * node, const T& v);  // Add after "node"
+  void remove(Node *node);		      // Remove "node"
+  
+private:
+  Node<T> *head;
+  Node<T> *tail;
+  size_t elemNum;
+
+private:
+  // TODO: Declare COUT method
+};
+
+template <typename T>
+DLL<T>::DLL() {
+  head = new Node<T>;
+  tail = new Node<T>(head, head);
+  head->prev = tail;
+  head->next = tail;
+  elemNum = 0;
+}
+
+template <typename T>
+DLL<T>::~DLL() {
+  while (!empty) {
+    remove(head->next);
+  }
+  delete head;
+  delete tail;
+}
+
+template<typename T>
+DLL<T>::empty() {
+  return elemNum == 0;
+  // return head->next == tail;
+}
+
+template <typename T>
+const T& front() {
+  return head->next->val;
+}
+
+template <typename T>
+const T& back() {
+  return tail->prev->val;
+}
+
 
 #endif
