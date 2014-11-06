@@ -1,6 +1,5 @@
-
-#ifndef CH06_HPP
-#define CH06_HPP
+#ifndef VECTOR_CH06_HPP
+#define VECTOR_CH06_HPP
 
 #include <memory>
 #include "exceptions.hpp"
