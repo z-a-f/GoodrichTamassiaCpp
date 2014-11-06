@@ -68,5 +68,11 @@ public:
     : RuntimeException(err) {}
 };
 
+class LinkedListOutOfBounds : public RuntimeException {
+public:
+  LinkedListOutOfBounds(const std::string& err = "Linked List out of bounds!")
+    : RuntimeException(err) {}
+};
+
 
 #endif

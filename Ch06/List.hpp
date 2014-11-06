@@ -3,6 +3,7 @@
 
 // Code Fragment: Class
 typedef int Elem;		// list base element type
+
 class NodeList {		// node-based list
 private:
   struct Node;

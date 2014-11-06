@@ -166,6 +166,11 @@ void ArrayVector<T>::debug() {
 }
 
 /* Chapter 6, Problem 6.2 - GR C++ */
+template <typename T> class Node;
+template <typename T> class DLL;
+template <typename T> std::ostream& operator<<(std::ostream&, const DLL<T>&);
+template <typename T> std::ostream& operator<<(std::ostream&, const Node<T>&);
+
 template <typename T>
 class Node {
 private:
@@ -182,8 +187,26 @@ private:
     this->prev = prev;
     this->next = next;
   }
+  Node(Node<T> *prev, Node<T> *next, T val) {
+    this->prev = prev;
+    this->next = next;
+    this->val = val;
+  }
+  ~Node() {
+    this->next = NULL;
+    this->prev = NULL;
+  }
 
+private:
   friend class DLL<T>;		// Give access to the DLL
+  friend std::ostream& operator<< <T> (std::ostream& os, const Node<T>& n);
+  friend std::ostream& operator<< <T> (std::ostream& os, const DLL<T>& d);
+};
+
+template <typename T>
+std::ostream& operator<<(std::ostream& os, const Node <T> & n) {
+  os << n.val;
+  return os;
 }
 
 template <typename T>
@@ -191,23 +214,26 @@ class DLL {
 public:
   DLL();
   ~DLL();
-  const bool empty();		// Is it empty?
-  const size_t size();		// Size of the DLL
-  const T& front();		// get the front
-  const T& back();		// get the back
-  const T& at(size_t i) throw (IndexOutOfBounds); // element at(i)
-  const T& operator[] <T> (const size_t& i);  // 
-  void insertBefore(Node * node, const T& v); // Add before "node"
-  void insertAfter(Node * node, const T& v);  // Add after "node"
-  void remove(Node *node);		      // Remove "node"
+  bool empty() const;		// Is it empty?
+  size_t size() const;		// Size of the DLL
+  T& front() const;		// get the front
+  T& back() const;		// get the back
+  T& operator[](int i);
+  const T& operator[](int i) const;
+  T& at(int i);
+  const T& at(int i) const throw (IndexOutOfBounds); // element at(i)
+  void insertBefore(Node <T>* node, const T& v) throw (LinkedListOutOfBounds); // Add before "node"
+  void insertAfter(Node <T>* node, const T& v) throw (LinkedListOutOfBounds);  // Add after "node"
+  void remove(Node <T>*node);		      // Remove "node"
   
-private:
+public:
   Node<T> *head;
   Node<T> *tail;
   size_t elemNum;
 
-private:
+public:
   // TODO: Declare COUT method
+  friend std::ostream& operator<< <T> (std::ostream& os, const DLL<T>& d);
 };
 
 template <typename T>
@@ -221,7 +247,7 @@ DLL<T>::DLL() {
 
 template <typename T>
 DLL<T>::~DLL() {
-  while (!empty) {
+  while (!empty()) {
     remove(head->next);
   }
   delete head;
@@ -229,20 +255,89 @@ DLL<T>::~DLL() {
 }
 
 template<typename T>
-DLL<T>::empty() {
+bool DLL<T>::empty() const{
   return elemNum == 0;
   // return head->next == tail;
 }
 
 template <typename T>
-const T& front() {
+T& DLL<T>::front() const {
   return head->next->val;
 }
 
 template <typename T>
-const T& back() {
+T& DLL<T>::back() const {
   return tail->prev->val;
 }
 
+template <typename T>
+T& DLL<T>::operator[](int i) {
+  Node <T>*n = this->head;
+  int counter = 0;
+  while (counter > i) {
+    n = n->next;
+    counter++;
+  }
+  return n->next->val;
+}
+
+template <typename T>
+const T& DLL<T>::operator[](int i) const {
+  return const_cast<T&>(*this)[i];
+}
+
+template <typename T>
+T& DLL<T>::at(int i) {
+  return (*this)[i];
+}
+
+template <typename T>
+const T& DLL<T>::at(int i) const throw (IndexOutOfBounds) {
+  if (i < 0 || i >= elemNum) {
+    throw IndexOutOfBounds("Illegal index in function at()");
+  }
+  // return const_cast<T&>(*this)[i];
+  return const_cast<T&> (at(i));
+}
+
+template <typename T>
+void DLL<T>:: insertBefore(Node <T>* node, const T& v) throw (LinkedListOutOfBounds) {
+  if (node == this->head)
+    throw LinkedListOutOfBounds("Cannot insert before head");
+  Node<T> *n = new Node<T>(node->prev, node, v);
+  n->prev->next = n;
+  n->next->prev = n;  
+  elemNum++;
+}
+
+template <typename T>
+void DLL<T>::insertAfter(Node <T>* node, const T& v) throw (LinkedListOutOfBounds){
+  if (node == this->tail)
+    throw LinkedListOutOfBounds("Cannot insert after tail");
+  Node<T> *n = new Node<T> (node, node->next, v);
+  n->prev->next = n;
+  n->next->prev = n;
+  elemNum++;
+}
+
+template <typename T>
+void DLL<T>::remove(Node<T> * n) {
+  n->prev->next = n->next;
+  n->next->prev = n->prev;
+  delete n;
+  elemNum--;
+}
+
+template <typename T> 
+std::ostream& operator<<(std::ostream& os, const DLL<T>& d) {
+  Node <T>* n = d.head;
+  os << "HEAD<->";
+  for (size_t i = 0; i < d.elemNum; i++) {
+    os << n->next->val << "<->";
+    n = n->next;
+  }
+  os << "TAIL";
+  return os;
+}
 
 #endif
