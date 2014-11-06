@@ -1,4 +1,3 @@
-
 #ifndef VECTOR_CH06_HPP
 #define VECTOR_CH06_HPP
 
