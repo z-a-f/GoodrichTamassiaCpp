@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 #ifndef VECTOR_CH06_HPP
 #define VECTOR_CH06_HPP
-=======
-
-#ifndef CH06_HPP
-#define CH06_HPP
->>>>>>> 998c34c635b174b3df23a88ec15ac13735a0fbf1
 
 #include <memory>
 #include "exceptions.hpp"
