@@ -28,7 +28,7 @@ public:
     bool isExternal() const 
     { return v->left == NULL && v->right == NULL; } // External?
   public:
-    //~Position() { delete v; };
+    ~Position() { delete v; };
   };
   typedef std::list<Position> PositionList;
 public:
@@ -80,7 +80,7 @@ void LinkedBinaryTree<T>::addRoot() throw (TreeNotEmptyException) {
 /** Housekeeping functions **/
 template <typename T>
 LinkedBinaryTree<T>::~LinkedBinaryTree() {
-  // destroyTree(_root);
+  destroyTree(_root);
 }
 
 template <typename T>
