@@ -20,4 +20,17 @@ public:
     : RuntimeException(err) {}
 };
 
+class NodeNotExternalException : public RuntimeException {
+public:
+  NodeNotExternalException(const std::string& err = "Node is not external!")
+    : RuntimeException(err) {}
+};
+
+class NodeEmptyException : public RuntimeException {
+public:
+  NodeEmptyException(const std::string& err = "Node is empty!")
+    : RuntimeException(err) {}
+};
+
+
 #endif

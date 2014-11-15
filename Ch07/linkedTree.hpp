@@ -4,6 +4,7 @@
 #include <list>
 #include "exceptions.hpp"
 
+// Some definitions:
 template <typename T>
 class LinkedBinaryTree {
 protected:
@@ -26,9 +27,12 @@ public:
     Position parent() const { return Position(v->parent); } // Get parent
     bool isRoot() const { return v->par == NULL; }	    // Root?
     bool isExternal() const 
-    { return v->left == NULL && v->right == NULL; } // External?
+    { return v == NULL || (v->left == NULL && v->right == NULL); } // External?
+    bool isUndef() const {return v == NULL; }
   public:
     ~Position() { delete v; };
+  public:
+    friend class LinkedBinaryTree;
   };
   typedef std::list<Position> PositionList;
 public:
@@ -38,7 +42,8 @@ public:
   Position root() const;	// get the root
   PositionList positions() const; // list of all the nodes
   void addRoot() throw (TreeNotEmptyException); // add root to an empty tree
-  void expandExternal(const Position& p); // expand external node
+  void expandExternal(const Position& p)
+    throw (NodeNotExternalException, NodeEmptyException); // expand external node
   Position removeAboveExternal(const Position& p); // remove p and parent
 public:				// Housekeeping functions
   ~LinkedBinaryTree();		// Destructor
@@ -68,6 +73,14 @@ template <typename T>
 typename LinkedBinaryTree<T>::Position LinkedBinaryTree<T>::root() const
 { return Position(_root); }
 
+
+template <typename T>
+typename LinkedBinaryTree<T>::PositionList LinkedBinaryTree<T>::positions() const {
+  PositionList pl;
+  preorder(_root, pl);		// preorder the tree
+  return PositionList(pl);	// return resulting list
+}
+
 template <typename T>
 void LinkedBinaryTree<T>::addRoot() throw (TreeNotEmptyException) {
   if (!empty()) {
@@ -76,8 +89,43 @@ void LinkedBinaryTree<T>::addRoot() throw (TreeNotEmptyException) {
   _root = new Node; n = 1;
 }
 
+template <typename T>
+void LinkedBinaryTree<T>::expandExternal(const Position& p)
+  throw (NodeNotExternalException, NodeEmptyException)
+{
+  if (!p.isExternal())
+    throw NodeNotExternalException("Node has to be external to expand it!");
+  if (p.isUndef())
+    throw NodeEmptyException("Node cannot be empty to expand!");
+  Node* v = p.v;		// p's node
+  v->left = new Node;
+  v->left->par = v;
+  v->right = new Node;
+  v->right->par = v;
+  n += 2;
+}
 
-/** Housekeeping functions **/
+template <typename T>
+LinkedBinaryTree<T>::Position LinkedBinaryTree<T>::removeAboveExternal(const Position& p) {
+  Node* w = p.v;
+  Node* v = w->par;
+  Node* sib = (w == v->left ? v->right : v->lef);
+  if (v == _root) {
+    _root = sib;
+    sib->par = NULL;
+  } else {
+    Node* gpar = v->par;
+    if (v == gpar->left) gpar->left = sib;
+    else gpar->right = sib;
+    sib->par = gpar;
+  }
+  delete w; delete v;
+  n -= 2;
+  return Position(sib);
+}
+
+
+/** housekeeping functions **/
 template <typename T>
 LinkedBinaryTree<T>::~LinkedBinaryTree() {
   destroyTree(_root);
@@ -92,6 +140,15 @@ void LinkedBinaryTree<T>::destroyTree(Node* p) {
     delete p;
   }
   
+}
+
+template <typename T>
+void LinkedBinaryTree<T>::preorder(node* v, PositionList& pl) const {
+  pl.push_back(Position(v));
+  if (v->left != NULL)
+    preorder(v->left, pl);
+  if (v->right != NULL)
+    preorder(v->right, pl);
 }
 
 #endif
