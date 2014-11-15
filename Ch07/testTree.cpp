@@ -1,6 +1,6 @@
 #include <iostream>
 
-// #include "linkedTree.hpp"
+#include "linkedTree.hpp"
 // #include "Position.hpp"
 
 using namespace std;
@@ -15,4 +15,6 @@ int main() {
   Position<int> r(&p, 2);
   cout << *r <<endl;
   */
+  LinkedBinaryTree<int> lbt;
+  cout << lbt.empty() << endl;
 }
