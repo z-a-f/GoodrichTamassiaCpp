@@ -106,7 +106,7 @@ void LinkedBinaryTree<T>::expandExternal(const Position& p)
 }
 
 template <typename T>
-LinkedBinaryTree<T>::Position LinkedBinaryTree<T>::removeAboveExternal(const Position& p) {
+typename LinkedBinaryTree<T>::Position LinkedBinaryTree<T>::removeAboveExternal(const Position& p) {
   Node* w = p.v;
   Node* v = w->par;
   Node* sib = (w == v->left ? v->right : v->lef);
@@ -143,7 +143,7 @@ void LinkedBinaryTree<T>::destroyTree(Node* p) {
 }
 
 template <typename T>
-void LinkedBinaryTree<T>::preorder(node* v, PositionList& pl) const {
+void LinkedBinaryTree<T>::preorder(Node* v, PositionList& pl) const {
   pl.push_back(Position(v));
   if (v->left != NULL)
     preorder(v->left, pl);

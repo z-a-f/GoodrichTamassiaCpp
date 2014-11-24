@@ -17,6 +17,11 @@ int main() {
   */
   LinkedBinaryTree<int> lbt;
   cout << lbt.empty() << endl;
+  // lbt.expandExternal(lbt.root());
+  cout << lbt.empty() << endl;
+
+  lbt.addRoot();
+
   lbt.expandExternal(lbt.root());
   cout << lbt.empty() << endl;
 }
