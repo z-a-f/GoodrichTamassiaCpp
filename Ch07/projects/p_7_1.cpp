@@ -38,7 +38,6 @@ int main() {
   Tree lbt;
   cout << lbt.empty() << endl;
   lbt.addRoot();
-  lbt.addRoot();
   cout << lbt.empty() << endl;
   cout << lbt.size() << endl;
   lbt.expandExternal(lbt.root());
