@@ -3,7 +3,8 @@
 
 #include "exceptions.hpp"
 
-#include <list>			// Need that for position list
+#include <list>			// Need that for position list in linked binary tree
+#include <vector>		// Need that for vector-based binary tree
 
 /** Properties of a binary tree **/
 /*
@@ -140,6 +141,30 @@ void LinkedBinaryTree<T>::preorder(Node* v, PositionList& pl) const {
     preorder(v->left, pl);
   if (v->right != NULL)
     preorder(v->right,pl);
+}
+
+
+/********************************************************************************/
+template <typename T>
+class VectorBinaryTree {
+public:
+  typedef T* Position;
+public:
+  VectorBinaryTree();
+  std::size_t size() const;
+  bool empty() const;
+  Position root() const { return Position(positions.at(0)); }
+  //  Position left() const { return 
+  
+private:
+  // Root is implied as tje first element;
+  std::vector<T> positions;		// Vector with all the elements
+  // std::size_t n;		// Size of the tree
+};
+
+template <typename T>
+VectorBinaryTree<T>::VectorBinaryTree() {
+  positions = std::vector<T>();
 }
 
 #endif

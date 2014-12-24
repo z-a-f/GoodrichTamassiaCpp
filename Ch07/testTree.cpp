@@ -55,4 +55,7 @@ int main() {
   pl = lbt.positions();
 
 
+
+  VectorBinaryTree<int> vbt;
+  vbt.root();
 }
