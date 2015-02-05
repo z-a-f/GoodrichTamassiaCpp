@@ -26,16 +26,78 @@ public:
   bool hasLeft ( const Position& p) const { return 2*idx(p) <= size(); } // Is there left?
   bool hasRight ( const Position& p) const { return 2*idx(p) + 1 <= size(); } // Is there right?
   bool isRoot ( const Position& p) const { return idx(p) == 1; } // Is root?
-  Position root() { return pos(1); }				 // Get the root
-  Position last() { return pos(size()); }			 // Get the last element
-  void addLast(const E& e) { V.push_back(e); }			 // Add element to the end
-  void removeLast() { V.pop_back(); }				 // Remove last element
-  void swap(const Position& p, const Position& q) {		 // Swap two elements
+  Position root() { return pos(1); }	       // Get the root
+  Position last() { return pos(size()); }      // Get the last element
+  void addLast(const E& e) { V.push_back(e); } // Add element to the end
+  void removeLast() { V.pop_back(); }	       // Remove last element
+  void swap(const Position& p, const Position& q) { // Swap two elements
     E e = *q;
     *q = *p;
     *p = e;
   }
 };
 
+template <typename E, typename C>
+class HeapPriorityQueue {
+public:
+  int size() const;		// number of elements
+  bool empty() const;		// is it empty?
+  void insert (const E& e);	// insert element
+  const E& min();		// minimum element
+  void removeMin();		// remove minimum
+private:
+  VectorCompleteTree<E> T;	// priority queue constents
+  C isLess;			// less than comparator
 
+  typedef typename VectorCompleteTree<E>::Position Position;
+};
+
+template <typenme E, typename C> // Number of elements
+int HeapPriorityQueue<E,C>::size() const {
+  return T.size();
+}
+
+template <typenme E, typename C> // is it empty?
+bool HeapPriorityQueue<E,C>::empty() const {
+  return size() == 0;
+}
+
+template <typename E, typename C>
+const E& HeapPriorityQueue<E,C>::min() {
+  return *(T.root());
+}
+
+template <typename E, typename C>
+void HeapPriorityQueue<E,C>::insert(const E& e) {
+  T.addLast(e);			// Add e to heap
+  Position v = T.last();	// e's position
+  while (!T.isRoot(v)) {
+    Position u = T.parent(v);
+    if (!isLess(*v, *u)) break;	// if v in order, we're done
+    T.swap(v, u);		// ... else swap with parent
+    v = u;
+  }
+}
+
+template <typename E, typename C> // remove minimum
+void HeapPriorityQueue<E,C>::removeMin() {
+  if (size() == 1)		// if only one element
+    T.removeLast();		// get rid of it
+  else {
+    Position u = T.root();
+    T.swap(u, T.last());	// swap last with root
+    T.removeLast();		// remove the last one
+    while (T.hasLeft(u)) {	// down-heap bubbling
+      Position v = T.left(u);
+      if (*T.hasRight(u) && isLess(*(T.right(u)), *v))
+	v = T.right(u);		// v is u's smaller child
+      if (isLess(*v, *u)) {	// is u out of order?
+	T.swap(u, v);		// swap it
+	u = v;
+      }
+    }
+  }
+}
 #endif
+
+
