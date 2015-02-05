@@ -30,7 +30,7 @@ public:
   Position last() { return pos(size()); }			 // Get the last element
   void addLast(const E& e) { V.push_back(e); }			 // Add element to the end
   void removeLast() { V.pop_back(); }				 // Remove last element
-  void swap(const Position& p, const Position& q) {		 // Swap two elements
+  void swap(const Position& p, const Position& q) {		 // Swap two elementscV
     E e = *q;
     *q = *p;
     *p = e;
