@@ -84,12 +84,12 @@ void HeapPriorityQueue<E,C>::removeMin() {
   if (size() == 1)		// if only one element
     T.removeLast();		// get rid of it
   else {
-    Position u = T.root();
+    Position u = T.root();	// Root position
     T.swap(u, T.last());	// swap last with root
     T.removeLast();		// remove the last one
     while (T.hasLeft(u)) {	// down-heap bubbling
       Position v = T.left(u);
-      if (*T.hasRight(u) && isLess(*(T.right(u)), *v))
+      if (T.hasRight(u) && isLess(*(T.right(u)), *v))
 	v = T.right(u);		// v is u's smaller child
       if (isLess(*v, *u)) {	// is u out of order?
 	T.swap(u, v);		// swap it
