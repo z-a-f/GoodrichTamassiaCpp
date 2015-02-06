@@ -26,11 +26,11 @@ public:
   bool hasLeft ( const Position& p) const { return 2*idx(p) <= size(); } // Is there left?
   bool hasRight ( const Position& p) const { return 2*idx(p) + 1 <= size(); } // Is there right?
   bool isRoot ( const Position& p) const { return idx(p) == 1; } // Is root?
-  Position root() { return pos(1); }	       // Get the root
-  Position last() { return pos(size()); }      // Get the last element
-  void addLast(const E& e) { V.push_back(e); } // Add element to the end
-  void removeLast() { V.pop_back(); }	       // Remove last element
-  void swap(const Position& p, const Position& q) { // Swap two elements
+  Position root() { return pos(1); }				 // Get the root
+  Position last() { return pos(size()); }			 // Get the last element
+  void addLast(const E& e) { V.push_back(e); }			 // Add element to the end
+  void removeLast() { V.pop_back(); }				 // Remove last element
+  void swap(const Position& p, const Position& q) {		 // Swap two elementscV
     E e = *q;
     *q = *p;
     *p = e;
