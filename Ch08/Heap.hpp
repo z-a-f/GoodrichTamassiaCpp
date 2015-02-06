@@ -99,7 +99,6 @@ void HeapPriorityQueue<E,C>::removeMin() {
   }
 }
 
-
 #endif
 
 
