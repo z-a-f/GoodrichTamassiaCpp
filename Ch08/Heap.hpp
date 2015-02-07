@@ -41,7 +41,7 @@ template <typename E, typename C>
 class HeapPriorityQueue {
 public:
   HeapPriorityQueue() : T(VectorCompleteTree<E>()) {}; // Default constructor
-  HeapPriorityQueue(std::vector<E> L);		// Bottom-up constructor
+  // HeapPriorityQueue(std::vector<E> L);		// Bottom-up constructor
 public:
   int size() const;		// number of elements
   bool empty() const;		// is it empty?
@@ -102,6 +102,7 @@ void HeapPriorityQueue<E,C>::removeMin() {
   }
 }
 
+/*
 template <typename E, typename C>
 HeapPriorityQueue<E,C>::HeapPriorityQueue(std::vector<E> L) { // Bottom-up constructor
   this.T = BottomUpHeap<E>(L);
@@ -116,6 +117,7 @@ typename VectorCompleteTree<E> BottomUpHeap(std::vector<E> L, int begin, int n) 
   begin++;			// L.pop_front()
   
 }
+*/
 #endif
 
 
