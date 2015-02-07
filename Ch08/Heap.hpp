@@ -14,7 +14,7 @@ protected:
   Position pos(int i) {		// map index to a position
     return V.begin() + i;
   }
-  int idx(xonst Position& p) const { // map a position to index
+  int idx(const Position& p) const { // map a position to index
     return p - V.begin();
   }
 public:
@@ -40,6 +40,9 @@ public:
 template <typename E, typename C>
 class HeapPriorityQueue {
 public:
+  HeapPriorityQueue() : T(VectorCompleteTree<E>()) {}; // Default constructor
+  HeapPriorityQueue(std::vector<E> L);		// Bottom-up constructor
+public:
   int size() const;		// number of elements
   bool empty() const;		// is it empty?
   void insert (const E& e);	// insert element
@@ -52,12 +55,12 @@ private:
   typedef typename VectorCompleteTree<E>::Position Position;
 };
 
-template <typenme E, typename C> // Number of elements
+template <typename E, typename C> // Number of elements
 int HeapPriorityQueue<E,C>::size() const {
   return T.size();
 }
 
-template <typenme E, typename C> // is it empty?
+template <typename E, typename C> // is it empty?
 bool HeapPriorityQueue<E,C>::empty() const {
   return size() == 0;
 }
@@ -99,6 +102,20 @@ void HeapPriorityQueue<E,C>::removeMin() {
   }
 }
 
+template <typename E, typename C>
+HeapPriorityQueue<E,C>::HeapPriorityQueue(std::vector<E> L) { // Bottom-up constructor
+  this.T = BottomUpHeap<E>(L);
+}
+
+template <typename E>
+typename VectorCompleteTree<E> BottomUpHeap(std::vector<E> L, int begin, int n) {
+  VectorCompleteTree<E> T;
+  E e;
+  if (begin > end) return T;	// Empty vector 
+  e = L.at(begin);		// L.front()
+  begin++;			// L.pop_front()
+  
+}
 #endif
 
 
