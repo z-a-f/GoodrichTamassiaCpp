@@ -81,4 +81,17 @@ bool HashMap<K,V,H>::Iterator::operator==(const Iterator& p) const {
   else return ent == p.ent;
 }
 
+template <typename K, typename V, typename H>
+typename HashMap<K,V,H>::Iterator&
+HashMap<K,V,H>::Iterator::operator++() {
+  ++ent;			// Advance to the next entry in the bucket
+  if (endOfBkt(*this)) {	// Is it the end of bucket?
+    ++bkt;			// Go to next bucket
+    while (bkt != ba->end() && bkt->empty) ++bkt; // find non-empty bucket
+    if (bkt == ba->end()) return *this;		  // If the end of bucket array
+    ent = bkt.begin();				  // first non empty bucket
+  }
+  return *this;  
+}
+
 #endif
