@@ -1,6 +1,14 @@
-/*
- * Hash Map 
- * Separate Chaining
+/**
+ * @file HashMap.hpp
+ * @author Zafar Takhirov
+ * @date Feb. 28, 2015
+ *
+ * @brief This file contains description of the Hash Map using separate chaining
+ *
+ * This file contains hash map ADT using separate chaining.
+ * It contains full working example from the book by
+ * Goodrich and Tamassia "Data Structures and Algorithms
+ * in C++.
  */
 
 #ifndef HASH_MAP_HPP
@@ -11,26 +19,72 @@
 
 #include "MapEntry.hpp"
 
-template <typename K, typename V, typename H> // <key, value, hash comparator>
+/**
+ * @brief HashMap class with separate chaining
+ *
+ * The hash map is templated with 3 parameters:
+ * @param K Key data type
+ * @param V Value data type
+ * @param H Hash comparator
+ */
+template <typename K, typename V, typename H>
 class HashMap {
-public:				// TYPES:
-  typedef Entry<K,V> Entry;	// key-value pair
-  class Iterator;		// iterator/position
-public:				// METHODS:
-  HashMap(int capacity = 100);	// Default constructor
-  int size() const;		// Number of entries
-  bool empty() const;		// is the map empty?
-  Iterator find(const K& k);	// find key 'k'
-  Iterator put(const K& k, const V& v); // Add/Replace 'k'-'v' pair
+public:
+  /** @typedef key-value pair entry */
+  typedef Entry<K,V> Entry;
+  /** @brief iterator/position class */
+  class Iterator;
+public:
+  /** @brief Default constructor sets the capacity of the map 
+   * @param capacity Sets the capacity of the hash map
+   */
+  HashMap(int capacity = 100);
+  /** @brief Number of entries 
+   * @return int
+   */
+  int size() const;
+  /** @brief Check if the map is empty
+   * @return bool
+   */
+  bool empty() const;
+  /** @brief Find key
+   * @param k Key of type 'const K&'
+   * @return bool
+   */
+  Iterator find(const K& k);
+  /** @brief Add/Replace key-value pair
+   * @param k Key to be added
+   * @param v Value to be added
+   * @retval Iterator Position of the added/replaced pair
+   */
+  Iterator put(const K& k, const V& v);
+  /** @brief Remove using key
+   * @param k Key to be found and removed
+   */
   void erase(const K& k);		// Remove key 'k'
-  void erase(const Iterator& p);	// Remove position 'p'
-  Iterator begin();			// First position
-  Iterator end();			// Last positon
-protected:				// TYPES:
-  typedef std::list<Entry> Bucket;	// a bucket of entries
-  typedef std::vector<Bucket> BktArray; // a bucket array
-protected:				// HASHMAP UTILITIES:
-  Iterator finder();			// find utility
+  /** @brief Remove using Iterator
+   * @param p Iterator/position to be removed
+   */
+  void erase(const Iterator& p);
+  /** @brief First position
+   * @retval Iterator Position of the first entry
+   */
+  Iterator begin();
+  /** @brief End position
+   * @retval Iterator Position after the last entry
+   */
+  Iterator end();
+protected:
+  /** @typedef Bucket of entries */
+  typedef std::list<Entry> Bucket;
+  /** @typedef Bucket array */
+  typedef std::vector<Bucket> BktArray;
+protected:
+  /** @brief Find utility
+   * @param k Key to be found
+   * @retval Iterator Position of the found entry
+   */
+  Iterator finder(const K& k);	// find utility
   Iterator inserter(const Iterator& p, const Entry& e);
   void eraser(const Iterator& p);	     // erase utility
   typedef typename BktArray::iterator BItor; // Bucket iterator
@@ -44,7 +98,7 @@ private:
   H hash;			// the hash comparator;
   BktArray B;			// bucket array
 public:				// TYPES:
-  class Itertor {
+  class Iterator {
   private:
     EItor ent;			// which entry
     BItor bkt;			// which bucket
