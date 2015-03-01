@@ -1,15 +1,15 @@
-/**
+/************************************************************
  * @file HashMap.hpp
  * @author Zafar Takhirov
  * @date Feb. 28, 2015
  *
- * @brief This file contains description of the Hash Map using separate chaining
+ * @brief This file contains description of the Hash Map using separate chaining.
  *
  * This file contains hash map ADT using separate chaining.
  * It contains full working example from the book by
  * Goodrich and Tamassia "Data Structures and Algorithms
  * in C++.
- */
+ ***********************************************************/
 
 #ifndef HASH_MAP_HPP
 #define HASH_MAP_HPP
@@ -20,8 +20,7 @@
 #include "MapEntry.hpp"
 
 /**
- * @brief HashMap class with separate chaining
- *
+ * HashMap class with separate chaining.
  * The hash map is templated with 3 parameters:
  * @param K Key data type
  * @param V Value data type
@@ -30,65 +29,44 @@
 template <typename K, typename V, typename H>
 class HashMap {
 public:
-  /** @typedef key-value pair entry */
-  typedef Entry<K,V> Entry;
-  /** @brief iterator/position class */
-  class Iterator;
+  typedef Entry<K,V> Entry;	//!< @typedef key-value pair entry
+  /** Iterator/Position class */
+  class Iterator;		
 public:
-  /** @brief Default constructor sets the capacity of the map 
-   * @param capacity Sets the capacity of the hash map
-   */
-  HashMap(int capacity = 100);
-  /** @brief Number of entries 
-   * @return int
-   */
-  int size() const;
-  /** @brief Check if the map is empty
-   * @return bool
-   */
-  bool empty() const;
-  /** @brief Find key
-   * @param k Key of type 'const K&'
-   * @return bool
-   */
-  Iterator find(const K& k);
-  /** @brief Add/Replace key-value pair
-   * @param k Key to be added
-   * @param v Value to be added
-   * @retval Iterator Position of the added/replaced pair
-   */
-  Iterator put(const K& k, const V& v);
-  /** @brief Remove using key
-   * @param k Key to be found and removed
-   */
-  void erase(const K& k);		// Remove key 'k'
-  /** @brief Remove using Iterator
-   * @param p Iterator/position to be removed
-   */
-  void erase(const Iterator& p);
-  /** @brief First position
-   * @retval Iterator Position of the first entry
-   */
-  Iterator begin();
-  /** @brief End position
-   * @retval Iterator Position after the last entry
-   */
-  Iterator end();
+  HashMap (		     
+    int capacity = 100		//!< Initial capacity of the hash map.
+  );				//!< Default constructor
+  int size() const;		//!< Number of entries @returns Integer
+  bool empty() const;		//!< Check if empty @returns Boolean
+  Iterator find(const K& k);	//!< Find key @param k Key to be found @retval Iterator Position of the found key
+  Iterator put(
+	       const K& k,	//!< @param[in] Key to be added
+	       const V& v	//!< @param[in] Value to be added
+	       );		//!< Add/Replace key-value pair @retval Iterator Position of the added/replaced pair 
+  void erase(const K& k /**< [in] Key to be removed */ );	//!< Remove usign key
+  void erase(const Iterator& p /**< [in] Position to be removed */);  //!< Remove using position iterator
+  Iterator begin();		//!< First position @retval Iterator Position of the first entry
+  Iterator end();		//!< End position @retval Iterator Position after the last entry
 protected:
-  /** @typedef Bucket of entries */
-  typedef std::list<Entry> Bucket;
-  /** @typedef Bucket array */
-  typedef std::vector<Bucket> BktArray;
-protected:
-  /** @brief Find utility
-   * @param k Key to be found
-   * @retval Iterator Position of the found entry
+  /**
+   * @typedef std::list<Entry>
+   * @typedef std::vector<Bucket>
    */
-  Iterator finder(const K& k);	// find utility
-  Iterator inserter(const Iterator& p, const Entry& e);
+  typedef std::list<Entry> Bucket;      //!< Bucket of entries
+  typedef std::vector<Bucket> BktArray; //!< Bucket array
+protected:
+  Iterator finder(const K& k /**< [in] Key */);	//!< Find utility @retval Iterator Found position
+  Iterator inserter(
+    const Iterator& p,		//!< [in] Position to be inserted at
+    const Entry& e		//!< [in] Value to be inserted
+  );				//!< Insert utility @retval Iterator Position of the value in the hash map
   void eraser(const Iterator& p);	     // erase utility
-  typedef typename BktArray::iterator BItor; // Bucket iterator
-  typedef typename Bucket::iterator EItor;   // Entry iterator
+  /**
+   * @typedef typename BktArray::iterator
+   * @typedef typename Bucket::iterator
+   */
+  typedef typename BktArray::iterator BItor; //!< Bucket iterator
+  typedef typename Bucket::iterator EItor;   //!< Entry iterator
   static void nextEntry(Iterator& p)	     // bucket's next entry
   { ++p.ent; }
   static bool endOfBkt(const Iterator& p)    // end of bucket????
