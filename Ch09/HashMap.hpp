@@ -60,7 +60,7 @@ protected:
     const Iterator& p,		//!< [in] Position to be inserted at
     const Entry& e		//!< [in] Value to be inserted
   );				//!< Insert utility @retval Iterator Position of the value in the hash map
-  void eraser(const Iterator& p);	     // erase utility
+  void eraser(const Iterator& p /**< [in] Position */); //!< Eraser utility
   /**
    * @typedef typename BktArray::iterator
    * @typedef typename Bucket::iterator
