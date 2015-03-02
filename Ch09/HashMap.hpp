@@ -35,9 +35,9 @@ public:
 public:
   HashMap (		     
     int capacity = 100		//!< Initial capacity of the hash map.
-  );				//!< Default constructor
-  int size() const;		//!< Number of entries @returns Integer
-  bool empty() const;		//!< Check if empty @returns Boolean
+  );
+  int size() const;
+  bool empty() const;		
   Iterator find(const K& k);	//!< Find key @param k Key to be found @retval Iterator Position of the found key
   Iterator put(
 	       const K& k,	//!< [in] Key to be added
@@ -45,8 +45,8 @@ public:
 	       );		//!< Add/Replace key-value pair @retval Iterator Position of the added/replaced pair 
   void erase(const K& k /**< [in] Key to be removed */ );	//!< Remove usign key
   void erase(const Iterator& p /**< [in] Position to be removed */);  //!< Remove using position iterator
-  Iterator begin();		//!< First position @retval Iterator Position of the first entry
-  Iterator end();		//!< End position @retval Iterator Position after the last entry
+  Iterator begin();		
+  Iterator end();		
 protected:
   /**
    * @typedef std::list<Entry>
@@ -94,9 +94,13 @@ public:
     Entry& operator*();			      
     bool operator==(const Iterator& p) const;
     Iterator& operator++();		      
-    friend class HashMap;		      //!< Hash Map has to be a friend class to have access to internals
+    friend class HashMap; //!< Hash Map has to be a friend class to have access to internals
   };
 };
+
+/** @addtogroup iteratorGroup Iterator methods and declarations
+ * @{
+ */
 
 /** Iterator indirection operator (const).
  * @returns Entry
@@ -141,5 +145,49 @@ HashMap<K,V,H>::Iterator::operator++() {
   }
   return *this;  
 }
+/** @} */
+
+/** @addtogroup hashMapMethodsGroup Hash Map member methods
+ * @{
+ */
+
+/** First position 
+ * @retval Iterator Position of the first entry
+ */
+template <typename K, typename V, typename H>
+typename HashMap<K,V,H>::Iterator HashMap<K,V,H>::begin() {
+  if (empty()) return end();	// Empty? return end
+  BItor bkt = B.begin();	// otherwise search for an entry
+  while (bkt->empty()) ++bkt;	// find non-empty bucket
+  return Iterator(B, bkt, bkt->begin()); // return first bucket
+}
+
+/** End position
+ * @retval Iterator Position after the last entry
+ */
+template <typename K, typename V, typename H>
+typename HashMap<K,V,H>::Iterator HashMap<K,V,H>::end() {
+  return Iterator(B, B.end());
+}
+
+/** Default constructor.
+ * Sets n(0) and B(capacity)
+ */
+template <typename K, typename V, typename H>
+HashMap<K,V,H>::HashMap(int capacity) : n(0), B(capacity) {}
+
+/** Number of entries 
+ * @returns Integer 
+ */
+template <typename K, typename V, typename H>
+int HashMap<K,V,H>::size() const { return n; }
+
+/** Check if empty 
+ * @returns Boolean
+ */
+bool HashMap<K,V,H>::empty() const { return size() == 0; }
+
+/** @} */
+
 
 #endif
