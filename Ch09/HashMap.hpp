@@ -40,8 +40,8 @@ public:
   bool empty() const;		//!< Check if empty @returns Boolean
   Iterator find(const K& k);	//!< Find key @param k Key to be found @retval Iterator Position of the found key
   Iterator put(
-	       const K& k,	//!< @param[in] Key to be added
-	       const V& v	//!< @param[in] Value to be added
+	       const K& k,	//!< [in] Key to be added
+	       const V& v	//!< [in] Value to be added
 	       );		//!< Add/Replace key-value pair @retval Iterator Position of the added/replaced pair 
   void erase(const K& k /**< [in] Key to be removed */ );	//!< Remove usign key
   void erase(const Iterator& p /**< [in] Position to be removed */);  //!< Remove using position iterator
@@ -67,29 +67,35 @@ protected:
    */
   typedef typename BktArray::iterator BItor; //!< Bucket iterator
   typedef typename Bucket::iterator EItor;   //!< Entry iterator
-  static void nextEntry(Iterator& p)	     // bucket's next entry
-  { ++p.ent; }
-  static bool endOfBkt(const Iterator& p)    // end of bucket????
-  { return p.ent == p.bkt->end(); }
+  static void nextEntry(Iterator& p	/**< [in] Current position */)
+  { ++p.ent; }				//!< Bucket's next entry
+  static bool endOfBkt(const Iterator& p /**< [in] Current position */)
+  { return p.ent == p.bkt->end(); }	 //!< end of bucket????
 private:
-  int n;			// Number of entries
-  H hash;			// the hash comparator;
-  BktArray B;			// bucket array
-public:				// TYPES:
+  int n;			//!< @var Number of entries
+  H hash;			//!< @var the hash comparator;
+  BktArray B;			//!< @var bucket array
+public:
+  /** Iterator class identifies the position of an entry in a HashMap. */
   class Iterator {
   private:
-    EItor ent;			// which entry
-    BItor bkt;			// which bucket
-    const BktArray* ba;		// which bucket array
+    EItor ent;			//!< @var which entry
+    BItor bkt;			//!< @var which bucket
+    const BktArray* ba;		//!< @var which bucket array
   public:
+    /** Default Iterator constructor
+     * @param a Bucket array
+     * @param b Bucket itself
+     * @param q Current entry, defaults to Entry iterator
+     */
     Iterator(const BktArray& a, const BItor& b, const EItor& q = EItor())
       : ent(q), bkt(b), ba(&a) { }
-    Entry& operator*() const;		      // get entry
-    Entry& operator*();			      // get entry
-    bool operator==(const Iterator& p) const; // are iterators equal?
-    Iterator& operator++();		      // next iterator
-    Iterator& operator--();		      // previous iterator
-    friend class HashMap;
+    Entry& operator*() const;		      //!< Get entry (const) @retval Entry Current entry
+    Entry& operator*();			      //!< Get entry @retval Entry Current entry
+    bool operator==(const Iterator& p) const; //!< Are iterators equal? @returns Boolean
+    Iterator& operator++();		      //!< Next iterator @retval Iterator Pointer to the next Iterator
+    Iterator& operator--();		      //!< Previous iterator @retval Iterator Pointer to the previous Iterator
+    friend class HashMap;		      //!< Hash Map has to be a friend class to have access to internals
   };
 };
 
