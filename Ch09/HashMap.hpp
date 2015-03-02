@@ -83,35 +83,42 @@ public:
     BItor bkt;			//!< @var which bucket
     const BktArray* ba;		//!< @var which bucket array
   public:
-    /** Default Iterator constructor
+    /** Default Iterator constructor.
      * @param a Bucket array
      * @param b Bucket itself
      * @param q Current entry, defaults to Entry iterator
      */
     Iterator(const BktArray& a, const BItor& b, const EItor& q = EItor())
       : ent(q), bkt(b), ba(&a) { }
-    Entry& operator*() const;		      //!< Get entry (const) @retval Entry Current entry
-    Entry& operator*();			      //!< Get entry @retval Entry Current entry
-    bool operator==(const Iterator& p) const; //!< Are iterators equal? @returns Boolean
-    Iterator& operator++();		      //!< Next iterator @retval Iterator Pointer to the next Iterator
-    Iterator& operator--();		      //!< Previous iterator @retval Iterator Pointer to the previous Iterator
+    Entry& operator*() const;		      
+    Entry& operator*();			      
+    bool operator==(const Iterator& p) const;
+    Iterator& operator++();		      
     friend class HashMap;		      //!< Hash Map has to be a friend class to have access to internals
   };
 };
 
-// Iterator methods:
+/** Iterator indirection operator (const).
+ * @returns Entry
+ */
 template <typename K, typename V, typename H>
 typename HashMap<K,V,H>::Entry&
 HashMap<K,V,H>::Iterator::operator*() const {
   return *ent;
 }
 
+/** Iterator indirection operator.
+ * @returns Entry
+ */
 template <typename K, typename V, typename H>
 typename HashMap<K,V,H>::Entry&
 HashMap<K,V,H>::Iterator::operator*() {
   return *ent;
 }
 
+/** Iterator equality operator overloading.
+ * @returns Boolean
+ */
 template <typename K, typename V, typename H>
 bool HashMap<K,V,H>::Iterator::operator==(const Iterator& p) const {
   if (ba != p.ba || bkt != p.bkt) return false;
@@ -119,6 +126,9 @@ bool HashMap<K,V,H>::Iterator::operator==(const Iterator& p) const {
   else return ent == p.ent;
 }
 
+/** Iterator position increment operator overloading.
+ * @returns Iterator
+ */
 template <typename K, typename V, typename H>
 typename HashMap<K,V,H>::Iterator&
 HashMap<K,V,H>::Iterator::operator++() {
