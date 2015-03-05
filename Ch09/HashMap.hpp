@@ -18,6 +18,7 @@
 #include <vector>
 
 #include "MapEntry.hpp"
+#include "exceptions.hpp"
 
 /**
  * HashMap class with separate chaining.
@@ -43,8 +44,8 @@ public:
 	       const K& k,			// [in] Key to be added
 	       const V& v			// [in] Value to be added
 	       ); // Add/Replace key-value pair @retval Iterator Position of the added/replaced pair 
-  void erase(const K& k /**< [in] Key to be removed */ );	//!< Remove usign key
-  void erase(const Iterator& p /**< [in] Position to be removed */);  //!< Remove using position iterator
+  void erase(const K& k) throw (NonexistentElement);	// Remove usign key
+  void erase(const Iterator& p);  // Remove using position iterator
   Iterator begin();		
   Iterator end();		
 protected:
@@ -60,7 +61,7 @@ protected:
     const Iterator& p,			// [in] Position to be inserted at
     const Entry& e				// [in] Value to be inserted
   ); // Insert utility @retval Iterator Position of the value in the hash map
-  void eraser(const Iterator& p /**< [in] Position */); //!< Eraser utility
+  void eraser(const Iterator& p); // Eraser utility
   /**
    * @typedef BItor
    * @typedef EItor
@@ -185,6 +186,7 @@ int HashMap<K,V,H>::size() const { return n; }
 /** Check if empty 
  * @returns Boolean
  */
+template <typename K, typename V, typename H>
 bool HashMap<K,V,H>::empty() const { return size() == 0; }
 
 /** Finder utility
@@ -201,7 +203,8 @@ bool HashMap<K,V,H>::empty() const { return size() == 0; }
 template <typename K, typename V, typename H>
 typename HashMap<K,V,H>::Iterator
 HashMap<K,V,H>::finder(const K& k) {
-  int i = hash(k) % B.size();	// get hash index i
+  int i = // hash(k) % B.size();	// get hash index i
+	H(k) % B.size();	// get hash index i
   BItor bkt = B.begin() + i;	// the ith bucket
   Iterator p(B, bkt, bkt->begin()); // start of ith bucket
   while (!endOfBkt(p) && (*p).key() != k) // search for k
@@ -267,8 +270,50 @@ HashMap<K,V,H>::put(const K& k, const V& v) {
   }
 }
 
+/** Eraser utility.
+ *
+ * Removes an entry at a given position by invoking the 
+ * STL list erase function.
+ * @param[in] p Position to be erased
+ * @see erase(const Iterator& p)
+ * @see erase(const K& k)
+ */
+template <typename K, typename V, typename H>
+void HashMap<K,V,H>::eraser(const Iterator& p) {
+  p.bkt->erase(p.ent);
+  n--;
+}
 
+/** Erase method (using position)
+ *
+ * @param[in] p Position of an entry to be erased
+ * @see eraser 
+ * @see erase(const K& p)
+ */
+template <typename K, typename V, typename H>
+void HashMap<K,V,H>::erase(const Iterator& p) {
+  eraser(p);
+}
 
+/** Erase method (using key)
+ *
+ * Operation:
+ * -# Apply the finder utility to look up the key
+ * -# if not found, throw an error
+ * -# otherwise erase
+ *
+ * @throws NonexistentElement
+ * @param[in] k Key of an entry to be erased
+ * @see eraser 
+ * @see erase(const Iterator& p)
+ */
+template <typename K, typename V, typename H>
+void HashMap<K,V,H>::erase(const K& k) throw (NonexistentElement) {
+  Iterator p = finder(k);
+  if (endOfBkt(p))
+	throw NonexistentElement("Erase of nonexistent");
+  eraser(p);
+}
 /** @} */
 
 #endif
