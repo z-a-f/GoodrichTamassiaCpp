@@ -187,6 +187,28 @@ int HashMap<K,V,H>::size() const { return n; }
  */
 bool HashMap<K,V,H>::empty() const { return size() == 0; }
 
+/** Finder utility
+ *
+ * Operation:
+ * -# Apply hash funcion on the key modulo array size
+ * -# Add index to the beginning iterator (bkt)
+ * -# Create iterator p initialized to the beginning og the bkt 
+ * -# Run a while loop looking for the key
+ * 
+ * @param k Key to be found
+ * @retval Iterator Position that was found
+ */
+template <typename K, typename V, typename H>
+typename HashMap<K,V,H>::Iterator
+HashMap<K,V,H>::finder(const K& k) {
+  int i = hash(k) % B.size();
+  BItor bkt = B.begin() + i;
+  Iterator p(B, bkt, bkt->begin());
+  while (!endOfBkt(p) && (*p).key() != k)
+	nextEntry(p);
+  return p;
+}
+
 /** @} */
 
 #endif
