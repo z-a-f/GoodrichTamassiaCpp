@@ -38,43 +38,43 @@ public:
   );
   int size() const;
   bool empty() const;		
-  Iterator find(const K& k);	//!< Find key @param k Key to be found @retval Iterator Position of the found key
+  Iterator find(const K& k);	// Find key
   Iterator put(
-	       const K& k,	//!< [in] Key to be added
-	       const V& v	//!< [in] Value to be added
-	       );		//!< Add/Replace key-value pair @retval Iterator Position of the added/replaced pair 
+	       const K& k,			// [in] Key to be added
+	       const V& v			// [in] Value to be added
+	       ); // Add/Replace key-value pair @retval Iterator Position of the added/replaced pair 
   void erase(const K& k /**< [in] Key to be removed */ );	//!< Remove usign key
   void erase(const Iterator& p /**< [in] Position to be removed */);  //!< Remove using position iterator
   Iterator begin();		
   Iterator end();		
 protected:
   /**
-   * @typedef std::list<Entry>
-   * @typedef std::vector<Bucket>
+   * @typedef Bucket
+   * @typedef BktArray
    */
   typedef std::list<Entry> Bucket;      //!< Bucket of entries
   typedef std::vector<Bucket> BktArray; //!< Bucket array
 protected:
-  Iterator finder(const K& k /**< [in] Key */);	//!< Find utility @retval Iterator Found position
+  Iterator finder(const K& k);	// Find utility
   Iterator inserter(
-    const Iterator& p,		//!< [in] Position to be inserted at
-    const Entry& e		//!< [in] Value to be inserted
-  );				//!< Insert utility @retval Iterator Position of the value in the hash map
+    const Iterator& p,			// [in] Position to be inserted at
+    const Entry& e				// [in] Value to be inserted
+  ); // Insert utility @retval Iterator Position of the value in the hash map
   void eraser(const Iterator& p /**< [in] Position */); //!< Eraser utility
   /**
-   * @typedef typename BktArray::iterator
-   * @typedef typename Bucket::iterator
+   * @typedef BItor
+   * @typedef EItor
    */
   typedef typename BktArray::iterator BItor; //!< Bucket iterator
   typedef typename Bucket::iterator EItor;   //!< Entry iterator
-  static void nextEntry(Iterator& p	/**< [in] Current position */)
-  { ++p.ent; }				//!< Bucket's next entry
+  static void nextEntry(Iterator& p		/**< [in] Current position */)
+  { ++p.ent; }							//!< Bucket's next entry
   static bool endOfBkt(const Iterator& p /**< [in] Current position */)
-  { return p.ent == p.bkt->end(); }	 //!< end of bucket????
+  { return p.ent == p.bkt->end(); }		 //!< end of bucket????
 private:
-  int n;			//!< @var Number of entries
-  H hash;			//!< @var the hash comparator;
-  BktArray B;			//!< @var bucket array
+  int n;						// @var Number of entries
+  H hash;						// @var the hash comparator;
+  BktArray B;					//!< @var bucket array
 public:
   /** Iterator class identifies the position of an entry in a HashMap. */
   class Iterator {
@@ -195,19 +195,79 @@ bool HashMap<K,V,H>::empty() const { return size() == 0; }
  * -# Create iterator p initialized to the beginning og the bkt 
  * -# Run a while loop looking for the key
  * 
- * @param k Key to be found
+ * @param[in] k Key to be found
  * @retval Iterator Position that was found
  */
 template <typename K, typename V, typename H>
 typename HashMap<K,V,H>::Iterator
 HashMap<K,V,H>::finder(const K& k) {
-  int i = hash(k) % B.size();
-  BItor bkt = B.begin() + i;
-  Iterator p(B, bkt, bkt->begin());
-  while (!endOfBkt(p) && (*p).key() != k)
+  int i = hash(k) % B.size();	// get hash index i
+  BItor bkt = B.begin() + i;	// the ith bucket
+  Iterator p(B, bkt, bkt->begin()); // start of ith bucket
+  while (!endOfBkt(p) && (*p).key() != k) // search for k
 	nextEntry(p);
-  return p;
+  return p;						// return final position
 }
+
+/** Find key method.
+ * 
+ * Uses HashMap::finder() utility to search for a key.
+ * @param[in] k Key to be found
+ * @retval Iterator Position of the found key
+ */
+template <typename K, typename V, typename H>
+typename HashMap<K,V,H>::Iterator
+HashMap<K,V,H>::find(const K& k) {
+  Iterator p = finder(k);
+  if (endOfBkt(p))
+	return end();
+  else
+	return p;
+}
+
+/** Inserter utility
+ * 
+ * It invokes the STL list insert function to perform the insertion.
+ * It also increments the count of the number of entries in the map
+ * and returns an iterator to the insertion position
+ * @param[in] p HashMap::Iterator / Position where the entry would be put
+ * @param[in] e Entry to be inserted
+ * @retval Iterator Position where the entry was put
+ * @see HashMap::put
+ */
+template <typename K, typename V, typename H>
+typename HashMap<K,V,H>::Iterator
+HashMap<K,V,H>::inserter(const Iterator& p, const Entry& e) {
+  EItor ins = p.bkt->insert(p.ent, e); // insert before p
+  n++;								   // One more entry
+  return Iterator(B, p.bkt, ins);	   // return the position
+}
+
+/** Put key-value pair method
+ *
+ * Operation:
+ * - Search for key in the map using HashMap::finder
+ *   - If __not__ found, insert in the end of the bucket
+ *   - Otherwise, replace the value of the found key with the new value
+ *
+ * @param[in] k Key to be added/replaces
+ * @param[in] v New value
+ * @retval Iterator Position of the key-value pair in the hash map
+ * @see HashMap::inserter
+ */
+template <typename K, typename V, typename H>
+typename HashMap<K,V,H>::Iterator
+HashMap<K,V,H>::put(const K& k, const V& v) {
+  Iterator p = finder(k);
+  if (endOfBkt(p)) {
+	return inserter(p, Entry(k,v));
+  } else {
+	p.ent->setValue(v);
+	return p;
+  }
+}
+
+
 
 /** @} */
 

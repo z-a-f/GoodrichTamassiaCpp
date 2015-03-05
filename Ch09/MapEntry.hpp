@@ -16,7 +16,7 @@ public:
   const K& key() const { return _key; }	    //!< Get key @retval K& Internal key
   const V& value() const { return _value; } //!< Get value @retval V& Internal value
   void setKey(const K& k) { _key = k; }	    //!< Set key @param[in] k New key value
-  void setValue(const V& v) { _value = v; } //!< Set value @param[in] k New value
+  void setValue(const V& v) { _value = v; } //!< Set value @param[in] v New value
 private:
   K _key;				    //!< @var key
   V _value;				    //!< @var value
