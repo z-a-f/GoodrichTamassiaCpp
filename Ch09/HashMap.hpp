@@ -189,5 +189,4 @@ bool HashMap<K,V,H>::empty() const { return size() == 0; }
 
 /** @} */
 
-
 #endif
