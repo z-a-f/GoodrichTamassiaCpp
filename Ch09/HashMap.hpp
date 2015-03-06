@@ -2,13 +2,14 @@
  * @file HashMap.hpp
  * @author Zafar Takhirov
  * @date Feb. 28, 2015
+ * @page
  *
  * @brief This file contains description of the Hash Map using separate chaining.
  *
  * This file contains hash map ADT using separate chaining.
  * It contains full working example from the book by
  * Goodrich and Tamassia "Data Structures and Algorithms
- * in C++.
+ * in C++
  ***********************************************************/
 
 #ifndef HASH_MAP_HPP
