@@ -31,7 +31,7 @@
  * @tparam V Value data type
  * @tparam H Hash comparator
  */
-template <typename K, typename V, typename H>
+template <typename K, typename V>
 class SkipList {
 public:
   typedef SkipListEntry<K,V> Entry;	//!< @typedef key-value pair entry
@@ -45,6 +45,9 @@ public:							// Navigation
   Iterator before(Iterator p) { return p.left(); }
   Iterator above(Iterator p) { return p.top(); }
   Iterator below(Iterator p) { return p.bottom(); }
+private:
+  int n;						// size
+  
 public: // Iterator class definition:
   class Iterator {
   private:

@@ -83,7 +83,7 @@ public:
   private:
     EItor ent;			//!< @var which entry
     BItor bkt;			//!< @var which bucket
-    const BktArray* ba;		//!< @var which bucket array
+    const BktArray* ba;	//!< @var which bucket array
   public:
     /** Default Iterator constructor.
      * @param a Bucket array
