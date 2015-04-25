@@ -17,4 +17,8 @@ public:
   void value(const V& v) { _value = v; } /**< Value setter \param[in] V(value)*/
 };
 
+/** Binary Search tree */
+template <typename E>
+
+
 #endif
