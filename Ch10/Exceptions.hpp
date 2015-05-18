@@ -4,13 +4,13 @@
 #include <exception>
 #include <string>
 
-class NonexistentElement : public runtime_error {
+class NonexistentElement : public std::runtime_error {
 public:
   NonexistentElement(const std::string err = "Element doesn't exist!")
 	: runtime_error(err) {}
 };
 
-class BoundaryViolation : public runtime_error {
+class BoundaryViolation : public std::runtime_error {
 public:
   BoundaryViolation(const std::string err = "Out of bounds!")
 	: runtime_error(err) {}

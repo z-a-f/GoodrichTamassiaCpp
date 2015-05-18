@@ -2,7 +2,7 @@
 #define __BINARY_TREE_HPP__
 
 #include <list>
-#include <exception>
+// #include <exception>
 
 /** Binary tree ADT
  *
