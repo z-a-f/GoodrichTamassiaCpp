@@ -22,7 +22,13 @@ public:
   void value(const V& v) { _value = v; } /**< Value setter \param[in] V(value)*/
 };
 
-/** Binary Search tree */
+/** Binary Search tree 
+ *
+ * @warning The module is not tested
+ * @todo{Not all functions are defined - need to finish up. Refer to page 435 of the book}
+ *
+ * @todo Commenting is missing - When polishing up remember to check all the comments
+ */
 template <typename E>
 class BinarySearchTree {
 public: // Avoiding tons of template params, just use the ones declared in Entry
@@ -110,9 +116,30 @@ BinarySearchTree<E>::BinarySearchTree() : T(), n(0) {
   T.expandExternal(T.root());
 }
 
+/**
+ * @brief Root function utility
+ */
 template <typename E>
 BinarySearchTree<E>::TPos root() const {
   return T.root().left();
 }
+
+/** 
+ * @brief begin function 
+ * @returns Iterator
+ */
+template <typename E>
+BinarySearchTree<E>::Iterator begin() {
+  TPos v = root();				// Start at virtual root
+  while (v.isInternal()) v = v.left(); // Find leftmost node
+  return Iterator(v.parent());
+}
+
+/** 
+ * @brief end function 
+ * @returns Iterator
+ */
+template <typename E>
+BinarySearchTree<E>::Iterator end() { return Iterator(T.root()); }
 
 #endif
