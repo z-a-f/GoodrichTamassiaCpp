@@ -10,6 +10,8 @@
  * It contains full working example from the book by
  * Goodrich and Tamassia "Data Structures and Algorithms
  * in C++
+ * 
+ * This is a test modification for GIT
  ***********************************************************/
 
 #ifndef HASH_MAP_HPP
