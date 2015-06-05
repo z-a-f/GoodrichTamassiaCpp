@@ -38,6 +38,8 @@ public:
 	{ return v->par == NULL && v->right == NULL; }
 	bool isExternal() const		//! an external node?
 	{ return v->left == NULL && v->right == NULL; }
+	bool isInternal() const
+	{ return !isExternal(); }
 	friend class BinaryTree;	//!< get tree access
   };
   typedef std::list<Position> PositionList; //!< list of positions
@@ -52,6 +54,7 @@ public:
   void expandExternal(const Position& p); //!< expand external node
   Position removeAboveExternal(const Position& p); //!< remove p and parent
   // housekeeping functions
+  
 protected:
   void preorder(Node* v, PositionList& pl) const; //!< preorder utility
 private:

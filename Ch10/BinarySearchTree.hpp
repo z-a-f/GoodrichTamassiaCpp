@@ -153,8 +153,8 @@ typename BinarySearchTree<E>::Iterator BinarySearchTree<E>::end() { return Itera
 template <typename E>
 typename BinarySearchTree<E>::TPos BinarySearchTree<E>::finder(const K& k, const TPos& v) {
   if (v.isExternal()) return v;	// key not found
-  if(k < v->key()) return finder(k, v.left()); // search the left subtree
-  else if (v->key() < k) return finder(k, v.right()); // search the right tree
+  if(k < v.key()) return finder(k, v.left()); // search the left subtree
+  else if (v.key() < k) return finder(k, v.right()); // search the right tree
   else return v;				// Found it buddy!
 }
 
@@ -179,7 +179,7 @@ typename BinarySearchTree<E>::TPos BinarySearchTree<E>::inserter (const K& k, co
   while (v.isInternal())		// key already there?
 	v = finder (k, v.right());
   T.expandExternal(v);			// add new internal node
-  v->setKey(k); v->setValue(x);	// set entry
+  v.key(k); v.value(x);			// set entry
   n++;							// there are more entries now
   return v;						// return the position
 }
